@@ -44,4 +44,8 @@ public class LoginController {
         response.setMessage("Login successful");
         return response;
     }
+    @GetMapping("")
+    public void hello(){
+        System.out.println("test");
+    }
 }
