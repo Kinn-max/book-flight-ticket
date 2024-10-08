@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -20,4 +23,8 @@ public class AirlineEntity {
 
     @Column(name = "name")
     private String name;
+
+    //
+    @OneToMany(mappedBy = "airlineEntity", fetch = FetchType.LAZY)
+    private List<FlightEntity> flightEntityList = new ArrayList<>();
 }

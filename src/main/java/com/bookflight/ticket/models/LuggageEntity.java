@@ -24,7 +24,8 @@ public class LuggageEntity {
     @Column(name = "weight")
     private double weight;
 
-    @Column(name = "ticket_id")
-    private Long ticketId;
-
+//
+    @ManyToOne
+    @JoinColumn(name = "ticket_id")
+    private TicketEntity ticketEntity;
 }

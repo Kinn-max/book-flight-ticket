@@ -2,7 +2,10 @@ package com.bookflight.ticket.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -12,7 +15,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Table(name = "user")
-
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +37,11 @@ public class UserEntity {
 
     @Column(name = "address")
     private String address;
+    // ánh xạ
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    private List<TicketEntity> ticketEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    private List<RoleEntity> roleEntityList = new ArrayList<>();
 }
 

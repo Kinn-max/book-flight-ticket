@@ -34,7 +34,8 @@ public class FlightEntity {
     @Column(name = "departure_time")
     private Date departureTime;
 
-    @Column(name = "airline_id")
-    private Long airlineId;
-
+    //
+    @ManyToOne
+    @JoinColumn(name = "airline_id")
+    private AirlineEntity airlineEntity;
 }

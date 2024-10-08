@@ -20,4 +20,8 @@ public class RoleEntity {
 
     @Column(name = "name", length = 15)
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
 }

@@ -6,13 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "ticket")
-
 public class TicketEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +29,13 @@ public class TicketEntity {
     @Column(name = "price")
     private double price;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     @Column(name = "flight_id")
     private Long flightId;
+    //
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
+
+    @OneToMany(mappedBy = "ticketEntity", fetch = FetchType.LAZY)
+    private List<LuggageEntity> luggageEntityList = new ArrayList<>();
 }
