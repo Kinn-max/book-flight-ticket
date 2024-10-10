@@ -31,8 +31,8 @@ public class FlightEntity {
     @Column(name = "departure_time")
     private Date departureTime;
 
-    @Column(name = "plane_id")
-    private Long planeId;
+    @OneToOne
+    private PlaneEntity plane;
     //
     @ManyToMany(mappedBy = "flightEntityList", fetch = FetchType.LAZY)
     private List<AirportEntity> airportEntityList = new ArrayList<>();

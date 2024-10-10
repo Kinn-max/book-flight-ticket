@@ -36,4 +36,6 @@ public class PlaneEntity {
     @ManyToMany(mappedBy = "planeEntityList", fetch = FetchType.LAZY)
     private List<AirlineEntity> airlineEntityList = new ArrayList<>();
 
+    @OneToOne(mappedBy = "plane")
+    private FlightEntity flight;
 }
