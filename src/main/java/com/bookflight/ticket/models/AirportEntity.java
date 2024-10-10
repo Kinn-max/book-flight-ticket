@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -23,5 +26,17 @@ public class AirportEntity {
 
     @Column(name = "name")
     private String name;
+    @Column(name = "departure_airport")
+    private Boolean departureAirport;
 
+    @Column(name = "arrival_airport")
+    private Boolean arrivalAirport;
+    //
+    @ManyToMany
+    @JoinTable(
+            name = "airport_flight",
+            joinColumns = @JoinColumn(name = "airport_id"),
+            inverseJoinColumns = @JoinColumn(name = "flight_id")
+    )
+    private List<FlightEntity> flightEntityList = new ArrayList<>();
 }

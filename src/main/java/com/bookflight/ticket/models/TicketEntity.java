@@ -31,6 +31,7 @@ public class TicketEntity {
 
     @Column(name = "flight_id")
     private Long flightId;
+
     //
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -38,4 +39,7 @@ public class TicketEntity {
 
     @OneToMany(mappedBy = "ticketEntity", fetch = FetchType.LAZY)
     private List<LuggageEntity> luggageEntityList = new ArrayList<>();
+
+
+
 }

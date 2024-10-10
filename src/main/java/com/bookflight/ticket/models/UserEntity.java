@@ -40,12 +40,13 @@ public class UserEntity implements UserDetails {
 
     @Column(name = "address")
     private String address;
+    @Column(name = "role")
+    private String role;
+
     // ánh xạ
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     private List<TicketEntity> ticketEntityList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private List<RoleEntity> roleEntityList = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

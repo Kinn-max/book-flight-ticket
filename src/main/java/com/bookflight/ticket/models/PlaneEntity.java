@@ -1,5 +1,6 @@
 package com.bookflight.ticket.models;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,22 +15,25 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "airline")
-public class AirlineEntity {
+@Table(name = "plane")
+public class PlaneEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "eco_class")
+    private int ecoClass;
+
+    @Column(name = "bus_class")
+    private int busClass;
+
     @Column(name = "name")
     private String name;
-
     //
+    @OneToMany(mappedBy = "planeEntity", fetch = FetchType.LAZY)
+    private List<SeatEntity> seatEntityList = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "airline_plane",
-            joinColumns = @JoinColumn(name = "airline_id"),
-            inverseJoinColumns = @JoinColumn(name = "plane_id")
-    )
-    private List<PlaneEntity> planeEntityList = new ArrayList<>();
+    @ManyToMany(mappedBy = "planeEntityList", fetch = FetchType.LAZY)
+    private List<AirlineEntity> airlineEntityList = new ArrayList<>();
+
 }

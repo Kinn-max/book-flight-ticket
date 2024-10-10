@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,17 +28,15 @@ public class FlightEntity {
     @Column(name = "arrival_time")
     private Date arrivalTime;
 
-    @Column(name = "departure_airport")
-    private String departureAirport;
-
-    @Column(name = "arrival_airport")
-    private String arrivalAirport;
-
     @Column(name = "departure_time")
     private Date departureTime;
 
+    @Column(name = "plane_id")
+    private Long planeId;
     //
-    @ManyToOne
-    @JoinColumn(name = "airline_id")
-    private AirlineEntity airlineEntity;
+    @ManyToMany(mappedBy = "flightEntityList", fetch = FetchType.LAZY)
+    private List<AirportEntity> airportEntityList = new ArrayList<>();
+
+
+
 }
