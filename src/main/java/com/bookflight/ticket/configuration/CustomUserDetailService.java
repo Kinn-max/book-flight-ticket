@@ -3,6 +3,7 @@ package com.bookflight.ticket.configuration;
 import com.bookflight.ticket.models.UserEntity;
 import com.bookflight.ticket.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -20,8 +22,8 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByEmail(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not exist");
+            throw new UsernameNotFoundException("User not found");
         }
-        return new User(username, user.getPassword(), new ArrayList<>());
+        return new User(username, user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(user.getRole())));
     }
 }

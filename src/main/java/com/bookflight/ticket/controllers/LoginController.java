@@ -30,16 +30,4 @@ public class LoginController {
         }
         return response;
     }
-
-    @GetMapping("/get")
-    public APIResponse<String> getToken() {
-        APIResponse<String> response = new APIResponse<>();
-        response.setCode(200);
-        response.setMessage("Login successful");
-        return response;
-    }
-    @GetMapping("")
-    public void hello(){
-        System.out.println("test");
-    }
 }
