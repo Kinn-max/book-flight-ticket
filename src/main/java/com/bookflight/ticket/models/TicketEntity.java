@@ -40,6 +40,8 @@ public class TicketEntity {
     @OneToMany(mappedBy = "ticketEntity", fetch = FetchType.LAZY)
     private List<LuggageEntity> luggageEntityList = new ArrayList<>();
 
+    @OneToOne(mappedBy = "ticketEntity")
+    private FlightEntity flightEntity;
 
 
 }

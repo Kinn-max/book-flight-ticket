@@ -19,6 +19,7 @@ import java.util.List;
 public class PlaneEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "eco_class")
@@ -36,6 +37,6 @@ public class PlaneEntity {
     @ManyToMany(mappedBy = "planeEntityList", fetch = FetchType.LAZY)
     private List<AirlineEntity> airlineEntityList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "plane")
-    private FlightEntity flight;
+    @OneToOne(mappedBy = "planeEntity")
+    private FlightEntity flightEntity;
 }
