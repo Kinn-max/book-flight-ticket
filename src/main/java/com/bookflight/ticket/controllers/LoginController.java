@@ -3,14 +3,8 @@ package com.bookflight.ticket.controllers;
 import com.bookflight.ticket.configuration.JWTHelper;
 import com.bookflight.ticket.dto.response.APIResponse;
 import com.bookflight.ticket.services.LoginService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Encoders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 @RestController
 @RequestMapping("/api/auth")
