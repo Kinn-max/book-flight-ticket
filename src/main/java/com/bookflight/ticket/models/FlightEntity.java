@@ -31,6 +31,12 @@ public class FlightEntity {
     @Column(name = "departure_time")
     private Date departureTime;
 
+    @Column(name = "arrival_id")
+    private Long arrivalId;
+
+    @Column(name = "departure_id")
+    private Long departureId;
+
     @OneToOne
     private PlaneEntity plane;
     //

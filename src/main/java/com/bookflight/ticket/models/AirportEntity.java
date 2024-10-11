@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Table(name = "airport")
-
 public class AirportEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +25,7 @@ public class AirportEntity {
 
     @Column(name = "name")
     private String name;
-    @Column(name = "departure_airport")
-    private Boolean departureAirport;
 
-    @Column(name = "arrival_airport")
-    private Boolean arrivalAirport;
     //
     @ManyToMany
     @JoinTable(

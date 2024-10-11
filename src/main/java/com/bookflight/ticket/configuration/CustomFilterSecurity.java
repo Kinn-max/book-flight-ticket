@@ -3,6 +3,7 @@ package com.bookflight.ticket.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,10 +38,14 @@ public class CustomFilterSecurity {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->{
-                    auth.requestMatchers("/api/auth/login").permitAll();
-                    auth.anyRequest().authenticated();
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests( auth->{
+                    auth
+                            .requestMatchers("/api/auth/login").permitAll()
+                            .requestMatchers(HttpMethod.POST,"/api/airport/").permitAll()
+                            .requestMatchers(HttpMethod.DELETE,"/api/airport/delete/**").permitAll()
+                            .anyRequest().authenticated();
                 })
                 .sessionManagement(mannager -> mannager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(customJWTFilter, UsernamePasswordAuthenticationFilter.class);

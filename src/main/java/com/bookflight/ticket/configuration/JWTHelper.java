@@ -14,7 +14,6 @@ import java.util.Date;
 public class JWTHelper {
     @Value("${jwt.private-key}")
     public String secretKey;
-
     public String generateToken(String data){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         return Jwts.builder()
