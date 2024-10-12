@@ -20,7 +20,6 @@ import java.io.IOException;
 public class CustomJWTFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
-
     @Autowired
     private JWTHelper jwtHelper;
 
@@ -41,11 +40,10 @@ public class CustomJWTFilter extends OncePerRequestFilter {
 
     public String getTokenFromHeader(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        String token = null;
 
         if(StringUtils.hasText(header) && header.startsWith("Bearer ")) {
-            token = header.substring(7);
+            return header.substring(7);
         }
-        return token;
+        return null;
     }
 }
