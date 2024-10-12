@@ -38,7 +38,7 @@ public class CustomFilterSecurity {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth->{
                     auth
-                            .requestMatchers("/api/auth/login").permitAll()
+                            .requestMatchers("/api/auth/**").permitAll()
                             .requestMatchers(HttpMethod.POST,"/api/airport/").permitAll()
                             .requestMatchers(HttpMethod.DELETE,"/api/airport/delete/**").permitAll()
                             .requestMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
