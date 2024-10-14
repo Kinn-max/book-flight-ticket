@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class AirportController {
     @Autowired
     private AirportService airportService;
-    @PostMapping("")
+    @PostMapping("/create")
     public ResponseEntity<?> createAirport (@Valid @RequestBody AirportDto airportDto,
                                          BindingResult result) {
         try {
