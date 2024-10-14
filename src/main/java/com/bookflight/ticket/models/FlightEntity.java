@@ -39,13 +39,15 @@ public class FlightEntity {
     @Column(name = "departure_id")
     private Long departureId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "plane_id", referencedColumnName = "id")
+
+
+    @ManyToOne
+    @JoinColumn(name = "plane_id")
     private PlaneEntity planeEntity;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ticket_id", referencedColumnName = "id")
-    private TicketEntity ticketEntity;
+    @OneToMany(mappedBy = "flightEntity", fetch = FetchType.LAZY)
+    private List<TicketEntity> ticketEntityList = new ArrayList<>();
+
     //
     @ManyToMany(mappedBy = "flightEntityList", fetch = FetchType.LAZY)
     private List<AirportEntity> airportEntityList = new ArrayList<>();
