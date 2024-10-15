@@ -19,10 +19,13 @@ public class SeatEntity {
     private Long id;
 
     @Column(name = "seat_number")
-    private int seatNumber;
+    private String seatNumber;
 
     @Column(name = "seat_class", length = 50)
     private String seatClass;
+
+    @Column(name = "available")
+    private boolean available = true;
 
     //
     @ManyToOne
