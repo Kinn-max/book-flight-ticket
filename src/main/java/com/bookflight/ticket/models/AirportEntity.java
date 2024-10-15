@@ -27,11 +27,6 @@ public class AirportEntity {
     private String name;
 
     //
-    @ManyToMany
-    @JoinTable(
-            name = "airport_flight",
-            joinColumns = @JoinColumn(name = "airport_id"),
-            inverseJoinColumns = @JoinColumn(name = "flight_id")
-    )
+    @ManyToMany(mappedBy = "airportEntityList", fetch = FetchType.LAZY)
     private List<FlightEntity> flightEntityList = new ArrayList<>();
 }

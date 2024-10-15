@@ -49,7 +49,12 @@ public class FlightEntity {
     private List<TicketEntity> ticketEntityList = new ArrayList<>();
 
     //
-    @ManyToMany(mappedBy = "flightEntityList", fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "flight_airport",
+            joinColumns = @JoinColumn(name = "flight_id"),
+            inverseJoinColumns = @JoinColumn(name = "airport_id")
+    )
     private List<AirportEntity> airportEntityList = new ArrayList<>();
 
 
