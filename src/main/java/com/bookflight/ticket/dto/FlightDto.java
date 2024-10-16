@@ -1,6 +1,7 @@
 package com.bookflight.ticket.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,14 +22,19 @@ public class FlightDto {
     private String code;
 
     @NotNull(message = "Arrival time cannot be null")
+    @JsonProperty("arrival_time")
     private String arrivalTime;
 
+    @JsonProperty("departure_time")
     @NotNull(message = "Departure time cannot be null")
     private String departureTime;
 
+    @JsonProperty("arrival_id")
     private Long arrivalId;
 
+    @JsonProperty("departure_id")
     private Long departureId;
+    @JsonProperty("plane_id")
     private Long planeId;
     private List<AirportDto> airportDtoList;
 }
