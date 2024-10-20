@@ -42,6 +42,7 @@ public class CustomFilterSecurity {
                             .requestMatchers(HttpMethod.POST,"/api/airport/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers(HttpMethod.DELETE,"/api/airport/delete/**").hasAuthority(RoleType.ADMIN.name())
                             //flight
+                            .requestMatchers("/api/flight/detail/**").permitAll()
                             .requestMatchers(HttpMethod.POST,"/api/flight/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/user/**").hasAnyAuthority(RoleType.USER.name())

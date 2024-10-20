@@ -1,7 +1,10 @@
 package com.bookflight.ticket.services.impl;
 
+import com.bookflight.ticket.converter.FlightConverter;
 import com.bookflight.ticket.dto.AirportDto;
 import com.bookflight.ticket.dto.FlightDto;
+import com.bookflight.ticket.dto.request.FlightRequest;
+import com.bookflight.ticket.dto.response.FlightResponse;
 import com.bookflight.ticket.models.AirportEntity;
 import com.bookflight.ticket.models.FlightEntity;
 import com.bookflight.ticket.models.PlaneEntity;
@@ -13,8 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,8 @@ public class FlightServiceImpl implements FlightService {
     private PlaneRepository planeRepository;
     @Autowired
     private FlightRepository flightRepository;
+    @Autowired
+    private FlightConverter flightConverter;
     @Override
     public void createFlight(FlightDto flightDto) throws Exception {
         PlaneEntity planeEntity = planeRepository.findById(flightDto.getPlaneId())
@@ -62,6 +65,18 @@ public class FlightServiceImpl implements FlightService {
         } catch (ParseException e) {
             throw new RuntimeException("Error parsing date: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<FlightDto> searchFlight(FlightRequest flightRequest) throws Exception {
+        return null;
+    }
+
+    @Override
+    public FlightResponse getDetailFlight(Long id) throws Exception {
+        FlightEntity flightEntity = flightRepository.findById(id).orElseThrow(() -> new Exception("Flight not found !"));
+        FlightResponse  flightResponse = flightConverter.toFlightResponse(flightEntity);
+        return flightResponse;
     }
 
 }

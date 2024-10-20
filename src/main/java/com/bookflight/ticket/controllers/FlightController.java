@@ -3,6 +3,8 @@ package com.bookflight.ticket.controllers;
 
 import com.bookflight.ticket.dto.AirportDto;
 import com.bookflight.ticket.dto.FlightDto;
+import com.bookflight.ticket.dto.request.FlightRequest;
+import com.bookflight.ticket.dto.response.FlightResponse;
 import com.bookflight.ticket.services.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,31 @@ public class FlightController {
             flightService.createFlight(flightDto);
             return ResponseEntity.ok("Flight created !");
         } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchFlight (@Valid @RequestBody FlightRequest flightRequest, BindingResult result) {
+        try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .collect(Collectors.toList());
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            //chua lam
+            return null;
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getDetailFlight (@PathVariable Long id) {
+        try {
+            FlightResponse detailFlightResponse = flightService.getDetailFlight(id);
+            return  ResponseEntity.ok(detailFlightResponse);
+        }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
