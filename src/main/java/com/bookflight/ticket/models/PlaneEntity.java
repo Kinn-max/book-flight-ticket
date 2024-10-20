@@ -28,6 +28,12 @@ public class PlaneEntity {
     @Column(name = "bus_class")
     private int busClass;
 
+    @Column(name = "eco_price")
+    private double ecoPrice;
+
+    @Column(name = "bus_price")
+    private double busPrice;
+
     @Column(name = "name")
     private String name;
     //
