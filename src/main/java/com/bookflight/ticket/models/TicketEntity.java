@@ -20,17 +20,12 @@ public class TicketEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "seat_class", length = 50)
-    private String seatClass;
-
-    @Column(name = "seat_number")
-    private int seatNumber;
+    @Column(name = "seat_id")
+    private Long seatId;
 
     @Column(name = "price")
     private double price;
 
-    @Column(name = "flight_id")
-    private Long flightId;
 
     //
     @ManyToOne
@@ -41,7 +36,7 @@ public class TicketEntity {
     private List<LuggageEntity> luggageEntityList = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "ticketEntity")
+    @JoinColumn(name = "flight_id")
     private FlightEntity flightEntity;
 
 

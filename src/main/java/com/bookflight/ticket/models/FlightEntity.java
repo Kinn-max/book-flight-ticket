@@ -40,7 +40,6 @@ public class FlightEntity {
     private Long departureId;
 
 
-
     @ManyToOne
     @JoinColumn(name = "plane_id")
     private PlaneEntity planeEntity;

@@ -24,6 +24,9 @@ public class LuggageEntity {
     @Column(name = "weight")
     private double weight;
 
+    @Column(name = "price")
+    private double price;
+
 //
     @ManyToOne
     @JoinColumn(name = "ticket_id")

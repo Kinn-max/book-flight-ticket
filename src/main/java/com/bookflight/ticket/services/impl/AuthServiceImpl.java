@@ -31,7 +31,6 @@ public class AuthServiceImpl implements AuthService {
     public void signup(SignUpRequest signUpRequest) throws Exception {
         if (userRepository.findByEmail(signUpRequest.getEmail()) != null)
             throw new Exception("Email existed");
-
         UserEntity user = new UserEntity();
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
@@ -41,5 +40,11 @@ public class AuthServiceImpl implements AuthService {
         user.setPhoneNumber(signUpRequest.getPhoneNumber());
         user.setRole(RoleType.USER.name());
         userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity login(String email  )   {
+       UserEntity user = userRepository.findByEmail(email);
+       return user;
     }
 }
