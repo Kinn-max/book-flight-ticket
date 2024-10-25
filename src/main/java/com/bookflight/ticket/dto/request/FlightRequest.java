@@ -10,15 +10,14 @@ import java.util.Date;
 @Data
 public class FlightRequest {
     @NotNull
-    @JsonProperty("departure_airport_name")
-    private String departureAirportName;
+    @JsonProperty("departure_airport")
+    private Long departureAirport;
 
-    @JsonProperty("arrival_airport_name")
-    private String arrivalAirportName;
+    @NotNull
+    @JsonProperty("arrival_airport")
+    private Long arrivalAirport;
 
+    @NotNull
     @JsonProperty("departure_time")
-    private Date departureTime;
-
-    private String airline;
-
+    private String departureTime;
 }

@@ -1,6 +1,7 @@
 package com.bookflight.ticket.controllers;
 
 import com.bookflight.ticket.configuration.JWTHelper;
+import com.bookflight.ticket.dto.request.LoginRequest;
 import com.bookflight.ticket.dto.request.SignUpRequest;
 import com.bookflight.ticket.dto.response.APIResponse;
 import com.bookflight.ticket.models.UserEntity;
@@ -19,9 +20,9 @@ public class AuthController {
     private JWTHelper jwtHelper;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-        if(authService.checkLogin(email, password)) {
-            UserEntity user = authService.login(email);
+    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest loginRequest) {
+        if(authService.checkLogin(loginRequest.getEmail(), loginRequest.getPassword())) {
+            UserEntity user = authService.login(loginRequest.getEmail());
             String token = jwtHelper.generateToken(user);
             return ResponseEntity.ok(token);
         } else{

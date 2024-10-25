@@ -45,6 +45,7 @@ public class CustomFilterSecurity {
                             .requestMatchers("/api/ticket/book").hasAuthority(RoleType.USER.name())
                             //flight
                             .requestMatchers("/api/flight/detail/**").permitAll()
+                            .requestMatchers("/api/flight/search").permitAll()
                             .requestMatchers(HttpMethod.POST,"/api/flight/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/user/**").hasAnyAuthority(RoleType.USER.name())

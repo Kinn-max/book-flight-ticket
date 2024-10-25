@@ -4,10 +4,13 @@ import com.bookflight.ticket.converter.FlightConverter;
 import com.bookflight.ticket.dto.AirportDto;
 import com.bookflight.ticket.dto.FlightDto;
 import com.bookflight.ticket.dto.request.FlightRequest;
+import com.bookflight.ticket.dto.response.AirportResponse;
 import com.bookflight.ticket.dto.response.FlightResponse;
+import com.bookflight.ticket.dto.response.InfoSearchResponse;
 import com.bookflight.ticket.models.AirportEntity;
 import com.bookflight.ticket.models.FlightEntity;
 import com.bookflight.ticket.models.PlaneEntity;
+import com.bookflight.ticket.repositories.AirportRepository;
 import com.bookflight.ticket.repositories.FlightRepository;
 import com.bookflight.ticket.repositories.PlaneRepository;
 import com.bookflight.ticket.services.FlightService;
@@ -28,6 +31,8 @@ public class FlightServiceImpl implements FlightService {
     private FlightRepository flightRepository;
     @Autowired
     private FlightConverter flightConverter;
+    @Autowired
+    private AirportRepository airportRepository;
     @Override
     public void createFlight(FlightDto flightDto) throws Exception {
         PlaneEntity planeEntity = planeRepository.findById(flightDto.getPlaneId())
@@ -77,6 +82,46 @@ public class FlightServiceImpl implements FlightService {
         FlightEntity flightEntity = flightRepository.findById(id).orElseThrow(() -> new Exception("Flight not found !"));
         FlightResponse  flightResponse = flightConverter.toFlightResponse(flightEntity);
         return flightResponse;
+    }
+
+    @Override
+    public InfoSearchResponse getInfoSearch() {
+        InfoSearchResponse infoSearchResponse = new InfoSearchResponse();
+        List<AirportResponse> airportResponseList = new ArrayList<>();
+        List<AirportEntity> airportDtoList = airportRepository.findAll();
+        airportDtoList.forEach((airport) -> {
+            AirportResponse airportResponse = new AirportResponse();
+            airportResponse.setId(airport.getId());
+            airportResponse.setName(airport.getName());
+            airportResponseList.add(airportResponse);
+        });
+        infoSearchResponse.setArrivalAirports(airportResponseList);
+        infoSearchResponse.setDepartureAirports(airportResponseList);
+        return infoSearchResponse;
+    }
+
+    @Override
+    public List<FlightResponse> searchFlights(FlightRequest flightRequest) throws Exception {
+        try{
+            if(flightRequest.getArrivalAirport().equals(flightRequest.getDepartureAirport())){
+                throw new Exception("Departure airport and arrival airport cannot be the same");
+            }
+            List<FlightResponse> flightResponseList = new ArrayList<>();
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            Date departureTime = formatter.parse(flightRequest.getDepartureTime());
+
+            List<FlightEntity> flightEntityList = flightRepository.searchFlight(flightRequest.getDepartureAirport(), flightRequest.getArrivalAirport(), departureTime);
+            flightEntityList.forEach((flightEntity) -> {
+                FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity);
+                flightResponseList.add(flightResponse);
+            });
+            return flightResponseList;
+        } catch (ParseException e) {
+            throw new RuntimeException("Error parsing date: " + e.getMessage());
+        } catch (Exception ex){
+            throw new RuntimeException("Error searching flights: " + ex.getMessage());
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import com.bookflight.ticket.dto.AirportDto;
 import com.bookflight.ticket.dto.FlightDto;
 import com.bookflight.ticket.dto.request.FlightRequest;
 import com.bookflight.ticket.dto.response.FlightResponse;
+import com.bookflight.ticket.dto.response.InfoSearchResponse;
 import com.bookflight.ticket.services.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,16 @@ public class FlightController {
         }
     }
     @GetMapping("/search")
+    public ResponseEntity<?> getInfoSearch () {
+        try {
+            InfoSearchResponse infoSearchResponse = flightService.getInfoSearch();
+            return ResponseEntity.ok(infoSearchResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/search")
     public ResponseEntity<?> searchFlight (@Valid @RequestBody FlightRequest flightRequest, BindingResult result) {
         try {
             if (result.hasErrors()) {
@@ -47,12 +58,13 @@ public class FlightController {
                         .collect(Collectors.toList());
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            //chua lam
-            return null;
+            List<FlightResponse> flightResponses = flightService.searchFlights(flightRequest);
+            return ResponseEntity.ok(flightResponses);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getDetailFlight (@PathVariable Long id) {
         try {
