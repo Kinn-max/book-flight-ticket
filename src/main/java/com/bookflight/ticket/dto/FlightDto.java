@@ -34,6 +34,7 @@ public class FlightDto {
 
     @JsonProperty("departure_id")
     private Long departureId;
+
     @JsonProperty("plane_id")
     private Long planeId;
 

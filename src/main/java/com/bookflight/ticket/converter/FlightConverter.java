@@ -34,11 +34,10 @@ public class FlightConverter {
                 flightResponse.setDepartureLocation(airportEntity.getLocation());
             }
         }
-
         PlaneResponse planeResponse = planeConverter.toPlaneResponse(flightEntity.getPlaneEntity());
         flightResponse.setPlane(planeResponse);
         List<SeatEntity> seatEntityList = flightEntity.getSeatEntityList();
-        List<SeatResponse> seatResponseList = seatConverter.toSeatResponse(seatEntityList,flightEntity.getPlaneEntity());
+        List<SeatResponse> seatResponseList = seatConverter.toSeatResponse(seatEntityList,flightEntity);
         flightResponse.setSeats(seatResponseList);
         return flightResponse;
     }
