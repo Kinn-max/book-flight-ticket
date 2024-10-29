@@ -29,6 +29,6 @@ public class SeatEntity {
 
     //
     @ManyToOne
-    @JoinColumn(name = "plane_id")
-    private PlaneEntity planeEntity;
+    @JoinColumn(name = "flight_id")
+    private FlightEntity flightEntity;
 }

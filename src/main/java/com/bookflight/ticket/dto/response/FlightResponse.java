@@ -3,6 +3,7 @@ package com.bookflight.ticket.dto.response;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class FlightResponse {
@@ -15,5 +16,6 @@ public class FlightResponse {
     private String arrivalLocation;
     private String arrivalAirport;
     private PlaneResponse plane;
+    List<SeatResponse> seats;
 
 }

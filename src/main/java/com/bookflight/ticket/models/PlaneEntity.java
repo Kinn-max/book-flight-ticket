@@ -37,8 +37,6 @@ public class PlaneEntity {
     @Column(name = "name")
     private String name;
     //
-    @OneToMany(mappedBy = "planeEntity", fetch = FetchType.LAZY)
-    private List<SeatEntity> seatEntityList = new ArrayList<>();
 
     @ManyToMany(mappedBy = "planeEntityList", fetch = FetchType.LAZY)
     private List<AirlineEntity> airlineEntityList = new ArrayList<>();

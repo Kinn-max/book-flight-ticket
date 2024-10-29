@@ -56,6 +56,7 @@ public class FlightEntity {
     )
     private List<AirportEntity> airportEntityList = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "flightEntity", fetch = FetchType.LAZY)
+    private List<SeatEntity> seatEntityList = new ArrayList<>();
 
 }

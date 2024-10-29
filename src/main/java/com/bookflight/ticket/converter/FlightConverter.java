@@ -3,8 +3,10 @@ package com.bookflight.ticket.converter;
 
 import com.bookflight.ticket.dto.response.FlightResponse;
 import com.bookflight.ticket.dto.response.PlaneResponse;
+import com.bookflight.ticket.dto.response.SeatResponse;
 import com.bookflight.ticket.models.AirportEntity;
 import com.bookflight.ticket.models.FlightEntity;
+import com.bookflight.ticket.models.SeatEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +17,8 @@ import java.util.List;
 public class FlightConverter {
     @Autowired
     private PlaneConverter planeConverter;
-
+    @Autowired
+    private SeatConverter seatConverter;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -31,8 +34,12 @@ public class FlightConverter {
                 flightResponse.setDepartureLocation(airportEntity.getLocation());
             }
         }
+
         PlaneResponse planeResponse = planeConverter.toPlaneResponse(flightEntity.getPlaneEntity());
         flightResponse.setPlane(planeResponse);
+        List<SeatEntity> seatEntityList = flightEntity.getSeatEntityList();
+        List<SeatResponse> seatResponseList = seatConverter.toSeatResponse(seatEntityList,flightEntity.getPlaneEntity());
+        flightResponse.setSeats(seatResponseList);
         return flightResponse;
     }
 }

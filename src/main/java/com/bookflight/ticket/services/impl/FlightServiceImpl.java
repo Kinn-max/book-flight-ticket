@@ -10,9 +10,11 @@ import com.bookflight.ticket.dto.response.InfoSearchResponse;
 import com.bookflight.ticket.models.AirportEntity;
 import com.bookflight.ticket.models.FlightEntity;
 import com.bookflight.ticket.models.PlaneEntity;
+import com.bookflight.ticket.models.SeatEntity;
 import com.bookflight.ticket.repositories.AirportRepository;
 import com.bookflight.ticket.repositories.FlightRepository;
 import com.bookflight.ticket.repositories.PlaneRepository;
+import com.bookflight.ticket.repositories.SeatRepository;
 import com.bookflight.ticket.services.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,8 @@ public class FlightServiceImpl implements FlightService {
     private FlightConverter flightConverter;
     @Autowired
     private AirportRepository airportRepository;
+    @Autowired
+    private SeatRepository seatRepository;
     @Override
     public void createFlight(FlightDto flightDto) throws Exception {
         PlaneEntity planeEntity = planeRepository.findById(flightDto.getPlaneId())
@@ -66,6 +70,28 @@ public class FlightServiceImpl implements FlightService {
                     .airportEntityList(airportEntityList)
                     .build();
             flightRepository.save(flightEntity);
+
+            int ecoClass = flightEntity.getPlaneEntity().getEcoClass();
+            int busClass = flightEntity.getPlaneEntity().getBusClass();
+            for (int i = 0; i < busClass; i++) {
+                for(char c = 'A'; c <= 'C'; c++) {
+                    SeatEntity seatEntity = new SeatEntity();
+                    seatEntity.setSeatClass("Business Class");
+                    seatEntity.setSeatNumber(c + String.valueOf(i+1));
+                    seatEntity.setFlightEntity(flightEntity);
+                    seatRepository.save(seatEntity);
+                }
+            }
+
+            for (int i = 0; i < ecoClass; i++) {
+                for(char c = 'A'; c <= 'I'; c++) {
+                    SeatEntity seatEntity = new SeatEntity();
+                    seatEntity.setSeatClass("Economy Class");
+                    seatEntity.setSeatNumber(c + String.valueOf(i+1));
+                    seatEntity.setFlightEntity(flightEntity);
+                    seatRepository.save(seatEntity);
+                }
+            }
 
         } catch (ParseException e) {
             throw new RuntimeException("Error parsing date: " + e.getMessage());

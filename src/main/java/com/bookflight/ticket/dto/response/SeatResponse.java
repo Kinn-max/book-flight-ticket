@@ -8,5 +8,5 @@ public class SeatResponse {
     private String seatNumber;
     private String seatClass;
     private boolean available;
-
+    private double price;
 }
