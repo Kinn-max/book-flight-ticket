@@ -36,5 +36,12 @@ public class FlightDto {
     private Long departureId;
     @JsonProperty("plane_id")
     private Long planeId;
+
+    @JsonProperty("eco_price")
+    private double ecoPrice;
+
+    @JsonProperty("bus_price")
+    private double busPrice;
+
     private List<AirportDto> airportDtoList;
 }

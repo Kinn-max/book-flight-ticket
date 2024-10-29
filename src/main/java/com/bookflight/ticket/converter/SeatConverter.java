@@ -19,11 +19,11 @@ public class SeatConverter {
         List<SeatResponse> seatResponses = new ArrayList<>();
         for (SeatEntity seatEntity : seatEntities) {
             SeatResponse seatResponse = modelMapper.map(seatEntity, SeatResponse.class);
-            if(seatEntity.getSeatClass().equals("Business Class")){
-                seatResponse.setPrice(planeEntity.getBusPrice());
-            }else{
-                seatResponse.setPrice(planeEntity.getEcoPrice());
-            }
+//            if(seatEntity.getSeatClass().equals("Business Class")){
+//                seatResponse.setPrice(planeEntity.getBusPrice());
+//            }else{
+//                seatResponse.setPrice(planeEntity.getEcoPrice());
+//            }
             seatResponses.add(seatResponse);
         }
         return seatResponses;

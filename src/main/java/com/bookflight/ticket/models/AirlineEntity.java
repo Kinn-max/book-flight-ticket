@@ -25,11 +25,6 @@ public class AirlineEntity {
 
     //
 
-    @ManyToMany
-    @JoinTable(
-            name = "airline_plane",
-            joinColumns = @JoinColumn(name = "airline_id"),
-            inverseJoinColumns = @JoinColumn(name = "plane_id")
-    )
+    @ManyToMany(mappedBy = "airlineEntityList", fetch = FetchType.LAZY)
     private List<PlaneEntity> planeEntityList = new ArrayList<>();
 }

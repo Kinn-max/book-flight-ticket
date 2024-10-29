@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PlaneRequest {
     @NotNull
@@ -17,14 +19,9 @@ public class PlaneRequest {
     @JsonProperty("bus_class")
     private int busClass;
 
-    @JsonProperty("eco_price")
-    private double ecoPrice;
-
-    @JsonProperty("bus_price")
-    private double busPrice;
-
     @NotEmpty(message = "Name cannot empty")
     private String name;
 
-
+    @NotEmpty(message = "Cannot empty")
+    private List<Long> airlineIds;
 }

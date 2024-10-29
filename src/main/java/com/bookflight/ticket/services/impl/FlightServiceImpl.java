@@ -67,6 +67,8 @@ public class FlightServiceImpl implements FlightService {
                     .departureId(flightDto.getDepartureId())
                     .arrivalId(flightDto.getArrivalId())
                     .planeEntity(planeEntity)
+                    .busPrice(flightDto.getBusPrice())
+                    .ecoPrice(flightDto.getEcoPrice())
                     .airportEntityList(airportEntityList)
                     .build();
             flightRepository.save(flightEntity);

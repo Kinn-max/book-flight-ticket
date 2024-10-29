@@ -28,17 +28,16 @@ public class PlaneEntity {
     @Column(name = "bus_class")
     private int busClass;
 
-    @Column(name = "eco_price")
-    private double ecoPrice;
-
-    @Column(name = "bus_price")
-    private double busPrice;
-
     @Column(name = "name")
     private String name;
     //
 
-    @ManyToMany(mappedBy = "planeEntityList", fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "plane_airline",
+            joinColumns = @JoinColumn(name = "plane_id"),
+            inverseJoinColumns = @JoinColumn(name = "airline_id")
+    )
     private List<AirlineEntity> airlineEntityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "planeEntity", fetch = FetchType.LAZY)

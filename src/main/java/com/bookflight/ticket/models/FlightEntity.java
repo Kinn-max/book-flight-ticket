@@ -39,6 +39,12 @@ public class FlightEntity {
     @Column(name = "departure_id")
     private Long departureId;
 
+    @Column(name = "eco_price")
+    private double ecoPrice;
+
+    @Column(name = "bus_price")
+    private double busPrice;
+
 
     @ManyToOne
     @JoinColumn(name = "plane_id")
