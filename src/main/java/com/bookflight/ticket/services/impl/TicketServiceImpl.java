@@ -56,6 +56,7 @@ public class TicketServiceImpl implements TicketService {
         LuggageEntity luggageEntity = null;
         if(ticketRequest.getLuggageId() != null){
             luggageEntity = luggageRepository.findById(ticketRequest.getLuggageId()).orElseThrow(() -> new Exception("Luggage not found"));
+            price += luggageEntity.getPrice();
         }
 
         TicketEntity ticketEntity = TicketEntity.builder()
@@ -80,7 +81,6 @@ public class TicketServiceImpl implements TicketService {
             bookedInfo.setArrivalAirportName(airportRepository.findById(result.getFlightEntity().getArrivalId()).get().getName());
             bookedInfo.setDepartureAirportName(airportRepository.findById(result.getFlightEntity().getDepartureId()).get().getName());
             bookedInfo.setAirlineName(result.getFlightEntity().getPlaneEntity().getAirlineEntity().getName());
-
             sendEmail(bookedInfo, user);
         }
     }
@@ -103,7 +103,6 @@ public class TicketServiceImpl implements TicketService {
                 .subject("Your Ticket Purchase Confirmation")
                 .props(placeholders)
                 .build();
-
         emailService.sendHtmlMail(mailBody, "email_template_ticketpurchase");
     }
 }
