@@ -32,13 +32,9 @@ public class PlaneEntity {
     private String name;
     //
 
-    @ManyToMany
-    @JoinTable(
-            name = "plane_airline",
-            joinColumns = @JoinColumn(name = "plane_id"),
-            inverseJoinColumns = @JoinColumn(name = "airline_id")
-    )
-    private List<AirlineEntity> airlineEntityList = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "airline_id")
+    private AirlineEntity airlineEntity;
 
     @OneToMany(mappedBy = "planeEntity", fetch = FetchType.LAZY)
     private List<FlightEntity> flightEntityList = new ArrayList<>();

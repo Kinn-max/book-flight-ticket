@@ -17,7 +17,6 @@ public class TicketRequest {
     @NotNull(message = "Flight not null")
     private Long flightId;
 
-    @JsonProperty("luggage_list")
-    private List<LuggageRequest> luggageRequests;
-
+    @JsonProperty("luggage")
+    private Long luggageId;
 }

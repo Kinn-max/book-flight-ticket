@@ -25,6 +25,6 @@ public class AirlineEntity {
 
     //
 
-    @ManyToMany(mappedBy = "airlineEntityList", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "airlineEntity", fetch = FetchType.LAZY)
     private List<PlaneEntity> planeEntityList = new ArrayList<>();
 }

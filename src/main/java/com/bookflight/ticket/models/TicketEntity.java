@@ -32,8 +32,9 @@ public class TicketEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    @OneToMany(mappedBy = "ticketEntity", fetch = FetchType.LAZY)
-    private List<LuggageEntity> luggageEntityList = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "luggage_id")
+    private LuggageEntity luggageEntity;
 
     @ManyToOne
     @JoinColumn(name = "flight_id")

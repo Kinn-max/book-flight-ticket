@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface FlightService {
     void createFlight(FlightDto flightDto) throws Exception;
-    List<FlightDto> searchFlight(FlightRequest flightRequest) throws Exception;
     FlightResponse getDetailFlight(Long id) throws Exception;
     InfoSearchResponse getInfoSearch();
     List<FlightResponse> searchFlights(FlightRequest flightRequest) throws Exception;
+    List<FlightResponse> getAllFlights() throws Exception;
 }

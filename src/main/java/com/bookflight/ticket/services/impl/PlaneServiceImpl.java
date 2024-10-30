@@ -24,12 +24,12 @@ public class PlaneServiceImpl implements PlaneService {
 
     @Override
     public void createPlane(PlaneRequest planeRequest) {
-        List<AirlineEntity> airlines = planeRequest.getAirlineIds().stream().map(id -> airlineRepository.getById(id)).collect(Collectors.toList());
+        AirlineEntity airline = airlineRepository.findById(planeRequest.getAirlineId()).orElseThrow(() -> new RuntimeException("Airline not found"));
         PlaneEntity planeEntity = PlaneEntity.builder()
                 .name(planeRequest.getName())
                 .busClass(planeRequest.getBusClass())
                 .ecoClass(planeRequest.getEcoClass())
-                .airlineEntityList(airlines)
+                .airlineEntity(airline)
                 .build();
         planeRepository.save(planeEntity);
 

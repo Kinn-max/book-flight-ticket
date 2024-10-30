@@ -22,6 +22,6 @@ public class PlaneRequest {
     @NotEmpty(message = "Name cannot empty")
     private String name;
 
-    @NotEmpty(message = "Cannot empty")
-    private List<Long> airlineIds;
+    @NotNull(message = "Cannot empty")
+    private Long airlineId;
 }

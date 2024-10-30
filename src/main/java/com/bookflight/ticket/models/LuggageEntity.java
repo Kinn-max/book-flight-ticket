@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -28,7 +31,6 @@ public class LuggageEntity {
     private double price;
 
 //
-    @ManyToOne
-    @JoinColumn(name = "ticket_id")
-    private TicketEntity ticketEntity;
+    @OneToMany(mappedBy = "luggageEntity", fetch = FetchType.LAZY)
+    private List<TicketEntity> ticketEntities = new ArrayList<>();
 }

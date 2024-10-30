@@ -101,11 +101,6 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightDto> searchFlight(FlightRequest flightRequest) throws Exception {
-        return null;
-    }
-
-    @Override
     public FlightResponse getDetailFlight(Long id) throws Exception {
         FlightEntity flightEntity = flightRepository.findById(id).orElseThrow(() -> new Exception("Flight not found !"));
         FlightResponse  flightResponse = flightConverter.toFlightResponse(flightEntity);
@@ -150,6 +145,17 @@ public class FlightServiceImpl implements FlightService {
         } catch (Exception ex){
             throw new RuntimeException("Error searching flights: " + ex.getMessage());
         }
+    }
+
+    @Override
+    public List<FlightResponse> getAllFlights() throws Exception {
+        List<FlightResponse> flightResponseList = new ArrayList<>();
+        List<FlightEntity> flightEntityList = flightRepository.findAll();
+        flightEntityList.forEach((flightEntity) -> {
+            FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity);
+            flightResponseList.add(flightResponse);
+        });
+        return flightResponseList;
     }
 
 }

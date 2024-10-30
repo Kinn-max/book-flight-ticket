@@ -74,4 +74,14 @@ public class FlightController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllFlights() {
+        try {
+            List<FlightResponse> flightResponses = flightService.getAllFlights();
+            return ResponseEntity.ok(flightResponses);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
