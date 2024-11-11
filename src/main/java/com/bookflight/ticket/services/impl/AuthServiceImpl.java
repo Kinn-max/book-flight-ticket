@@ -1,6 +1,9 @@
 package com.bookflight.ticket.services.impl;
 
+import com.bookflight.ticket.configuration.JWTHelper;
 import com.bookflight.ticket.dto.request.SignUpRequest;
+import com.bookflight.ticket.dto.response.JwtAuthenticationResponse;
+import com.bookflight.ticket.dto.response.UserSignInRepose;
 import com.bookflight.ticket.enums.RoleType;
 import com.bookflight.ticket.models.UserEntity;
 import com.bookflight.ticket.repositories.UserRepository;
@@ -20,6 +23,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JWTHelper jwtHelper;
 
     @Override
     public boolean checkLogin(String email, String password) {
@@ -43,8 +49,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserEntity login(String email  )   {
+    public JwtAuthenticationResponse login(String email) {
        UserEntity user = userRepository.findByEmail(email);
-       return user;
+       if (user == null) return null;
+
+        UserSignInRepose userSignInRepose = new UserSignInRepose();
+        userSignInRepose.setEmail(user.getEmail());
+        userSignInRepose.setName(user.getFullName());
+        userSignInRepose.setRole(user.getRole());
+
+       String token = jwtHelper.generateToken(user);
+       JwtAuthenticationResponse response = new JwtAuthenticationResponse();
+       response.setToken(token);
+       response.setUser(userSignInRepose);
+
+       return response;
     }
 }
