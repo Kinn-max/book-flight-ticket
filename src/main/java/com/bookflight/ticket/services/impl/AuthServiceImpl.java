@@ -45,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
         user.setDateOfBirth(localDate);
         user.setPhoneNumber(signUpRequest.getPhoneNumber());
         user.setRole(RoleType.USER.name());
+        user.setFullName(signUpRequest.getFullName());
         userRepository.save(user);
     }
 
