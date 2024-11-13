@@ -62,7 +62,7 @@ public class TicketServiceImpl implements TicketService {
         TicketEntity ticketEntity = TicketEntity.builder()
                 .flightEntity(flight)
                 .userEntity(user)
-                .seatId(ticketRequest.getSeatId())
+                .seat(seat)
                 .price(price)
                 .luggageEntity(luggageEntity)
                 .phone(ticketRequest.getPhone())

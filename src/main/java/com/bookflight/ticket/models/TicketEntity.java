@@ -22,9 +22,6 @@ public class TicketEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "seat_id")
-    private Long seatId;
-
     @Column(name = "price")
     private double price;
 
@@ -50,5 +47,7 @@ public class TicketEntity {
     @JoinColumn(name = "flight_id")
     private FlightEntity flightEntity;
 
-
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    private SeatEntity seat;
 }

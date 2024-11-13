@@ -8,6 +8,7 @@ import com.bookflight.ticket.dto.response.UserResponse;
 import com.bookflight.ticket.dto.response.UserSignInRepose;
 import com.bookflight.ticket.enums.RoleType;
 import com.bookflight.ticket.models.UserEntity;
+import com.bookflight.ticket.repositories.TicketRepository;
 import com.bookflight.ticket.repositories.UserRepository;
 import com.bookflight.ticket.services.AuthService;
 import org.modelmapper.ModelMapper;
@@ -25,6 +26,9 @@ import java.util.Date;
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -82,6 +86,7 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = userRepository.findByEmail(userDetails.getUsername());
         if (user == null) return null;
         UserResponse userResponse = new UserResponse();
+        userResponse.setBookingList(ticketRepository.findByUserId(user.getId()));
         modelMapper.map(user, userResponse);
 
         return userResponse;
