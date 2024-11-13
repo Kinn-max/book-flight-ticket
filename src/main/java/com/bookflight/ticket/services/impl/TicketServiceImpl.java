@@ -65,6 +65,9 @@ public class TicketServiceImpl implements TicketService {
                 .seatId(ticketRequest.getSeatId())
                 .price(price)
                 .luggageEntity(luggageEntity)
+                .phone(ticketRequest.getPhone())
+                .email(ticketRequest.getEmail())
+                .name(ticketRequest.getName())
                 .build();
         TicketEntity result = ticketRepository.save(ticketEntity);
         if(result.getId() != null){
@@ -81,13 +84,13 @@ public class TicketServiceImpl implements TicketService {
             bookedInfo.setArrivalAirportName(airportRepository.findById(result.getFlightEntity().getArrivalId()).get().getName());
             bookedInfo.setDepartureAirportName(airportRepository.findById(result.getFlightEntity().getDepartureId()).get().getName());
             bookedInfo.setAirlineName(result.getFlightEntity().getPlaneEntity().getAirlineEntity().getName());
-            sendEmail(bookedInfo, user);
+            sendEmail(bookedInfo, ticketRequest);
         }
     }
 
-    public void sendEmail(TicketBookedInfo ticketBookedInfo, UserEntity user) throws MessagingException {
+    public void sendEmail(TicketBookedInfo ticketBookedInfo, TicketRequest ticket) throws MessagingException {
         Map<String, Object> placeholders = new HashMap<>();
-        placeholders.put("name", user.getFullName());
+        placeholders.put("name", ticket.getName());
         placeholders.put("ticketId", ticketBookedInfo.getTicketId());
         placeholders.put("price", ticketBookedInfo.getPrice());
         placeholders.put("seatNumber", ticketBookedInfo.getSeatNumber());
@@ -99,7 +102,7 @@ public class TicketServiceImpl implements TicketService {
         placeholders.put("airlineName", ticketBookedInfo.getAirlineName());
 
         MailBody mailBody = MailBody.builder()
-                .to(user.getEmail())
+                .to(ticket.getEmail())
                 .subject("Your Ticket Purchase Confirmation")
                 .props(placeholders)
                 .build();

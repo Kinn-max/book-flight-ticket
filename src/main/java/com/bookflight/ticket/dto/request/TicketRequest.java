@@ -19,4 +19,16 @@ public class TicketRequest {
 
     @JsonProperty("luggage")
     private Long luggageId;
+
+    @JsonProperty("name")
+    @NotNull(message = "Name not null")
+    private String name;
+
+    @JsonProperty("phone")
+    @NotNull(message = "Phone not null")
+    private String phone;
+
+    @JsonProperty("email")
+    @NotNull(message = "Email not null")
+    private String email;
 }
