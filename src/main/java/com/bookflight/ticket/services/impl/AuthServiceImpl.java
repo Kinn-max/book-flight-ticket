@@ -1,14 +1,19 @@
 package com.bookflight.ticket.services.impl;
 
 import com.bookflight.ticket.configuration.JWTHelper;
+import com.bookflight.ticket.dto.request.ProfileRequest;
 import com.bookflight.ticket.dto.request.SignUpRequest;
 import com.bookflight.ticket.dto.response.JwtAuthenticationResponse;
+import com.bookflight.ticket.dto.response.UserResponse;
 import com.bookflight.ticket.dto.response.UserSignInRepose;
 import com.bookflight.ticket.enums.RoleType;
 import com.bookflight.ticket.models.UserEntity;
 import com.bookflight.ticket.repositories.UserRepository;
 import com.bookflight.ticket.services.AuthService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +31,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private JWTHelper jwtHelper;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public boolean checkLogin(String email, String password) {
@@ -65,5 +73,32 @@ public class AuthServiceImpl implements AuthService {
        response.setUser(userSignInRepose);
 
        return response;
+    }
+
+    @Override
+    public UserResponse getProfile() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserEntity user = userRepository.findByEmail(userDetails.getUsername());
+        if (user == null) return null;
+        UserResponse userResponse = new UserResponse();
+        modelMapper.map(user, userResponse);
+
+        return userResponse;
+    }
+
+    @Override
+    public boolean updateProfile(ProfileRequest profileRequest) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserEntity user = userRepository.findByEmail(userDetails.getUsername());
+        if (user == null) return false;
+
+        LocalDate localDate = LocalDate.parse(profileRequest.getDateOfBirth(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        user.setDateOfBirth(localDate);
+
+        modelMapper.map(profileRequest, user);
+        userRepository.save(user);
+        return true;
     }
 }
