@@ -97,7 +97,7 @@ public class TicketServiceImpl implements TicketService {
             TicketBookedInfo bookedInfo = new TicketBookedInfo();
             bookedInfo.setTicketId(ticketEntity.getId());
             bookedInfo.setPrice(ticketEntity.getPrice());
-             bookedInfo.setSeatNumber(seatRepository.findById(ticketEntity.getSeatId()).get().getSeatNumber());
+            bookedInfo.setSeatNumber(seatRepository.findById(ticketEntity.getSeatId()).get().getSeatNumber());
             bookedInfo.setFlightCode(ticketEntity.getFlightEntity().getCode());
             bookedInfo.setDepartureTime(ticketEntity.getFlightEntity().getDepartureTime());
             bookedInfo.setArrivalTime(ticketEntity.getFlightEntity().getArrivalTime());
