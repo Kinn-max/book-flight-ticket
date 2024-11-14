@@ -1,6 +1,8 @@
 package com.bookflight.ticket.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,12 +22,17 @@ public class TicketEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "seat_id")
-    private Long seatId;
-
     @Column(name = "price")
     private double price;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "email")
+    private String email;
 
     //
     @ManyToOne
@@ -40,5 +47,7 @@ public class TicketEntity {
     @JoinColumn(name = "flight_id")
     private FlightEntity flightEntity;
 
-
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    private SeatEntity seat;
 }
