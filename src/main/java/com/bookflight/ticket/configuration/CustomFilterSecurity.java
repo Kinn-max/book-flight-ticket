@@ -38,11 +38,11 @@ public class CustomFilterSecurity {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth->{
                     auth
-                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/api/auth/**", "/api/payment/booking").permitAll()
                             .requestMatchers(HttpMethod.POST,"/api/airport/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers(HttpMethod.DELETE,"/api/airport/delete/**").hasAuthority(RoleType.ADMIN.name())
                             //book
-                            .requestMatchers("/api/ticket/book").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
+                            .requestMatchers("/api/payment/create_payment_vnpay").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             //flight
                             .requestMatchers("/api/flight").permitAll()
                             .requestMatchers("/api/flight/detail/**").permitAll()

@@ -88,7 +88,7 @@
             <li th:if="${price != null}">
                 <strong>Total Price:</strong>
                 <span
-                        th:text="${price}"
+                        th:text="${#numbers.formatDecimal(price, 1, 'COMMA', 0, 'POINT') + ' VND'}"
                 ></span>
             </li>
         </ul>
