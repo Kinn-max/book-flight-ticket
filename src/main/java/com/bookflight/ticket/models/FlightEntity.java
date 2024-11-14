@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Table(name = "flight")
-
 public class FlightEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

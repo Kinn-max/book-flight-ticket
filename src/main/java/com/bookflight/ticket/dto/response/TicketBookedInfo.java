@@ -15,4 +15,5 @@ public class TicketBookedInfo {
     private String arrivalAirportName;
     private String departureAirportName;
     private String airlineName;
+    private double luggage;
 }

@@ -15,6 +15,7 @@ public class FlightResponse {
     private String departureLocation;
     private String arrivalLocation;
     private String arrivalAirport;
+    private String airline;
     private PlaneResponse plane;
     private double ecoPrice;
     private double busPrice;

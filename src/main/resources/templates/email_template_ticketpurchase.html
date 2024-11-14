@@ -91,6 +91,12 @@
                         th:text="${price}"
                 ></span>
             </li>
+            <li th:if="${luggage != null}">
+                <strong>Hành lý kí gửi:</strong>
+                <span
+                        th:text="${luggage}"
+                ></span>
+            </li>
         </ul>
         <p>
             You can view your ticket and event details by clicking the button

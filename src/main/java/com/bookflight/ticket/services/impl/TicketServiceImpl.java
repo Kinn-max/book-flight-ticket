@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -81,9 +79,41 @@ public class TicketServiceImpl implements TicketService {
             bookedInfo.setArrivalAirportName(airportRepository.findById(result.getFlightEntity().getArrivalId()).get().getName());
             bookedInfo.setDepartureAirportName(airportRepository.findById(result.getFlightEntity().getDepartureId()).get().getName());
             bookedInfo.setAirlineName(result.getFlightEntity().getPlaneEntity().getAirlineEntity().getName());
+            if(result.getLuggageEntity() == null){
+                bookedInfo.setLuggage(0);
+            }else {
+                bookedInfo.setLuggage(luggageEntity.getWeight());
+            }
             sendEmail(bookedInfo, user);
         }
     }
+
+    @Override
+    public List<TicketBookedInfo> getBookedTicketInfo(Long id) throws Exception {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new Exception("User not found"));
+        List<TicketBookedInfo> ticketBookedInfos = new ArrayList<>();
+        List<TicketEntity> ticketEntityList = ticketRepository.findByUserEntity(user);
+        for(TicketEntity ticketEntity : ticketEntityList){
+            TicketBookedInfo bookedInfo = new TicketBookedInfo();
+            bookedInfo.setTicketId(ticketEntity.getId());
+            bookedInfo.setPrice(ticketEntity.getPrice());
+            bookedInfo.setSeatNumber(seatRepository.findById(ticketEntity.getSeatId()).get().getSeatNumber());
+            bookedInfo.setFlightCode(ticketEntity.getFlightEntity().getCode());
+            bookedInfo.setDepartureTime(ticketEntity.getFlightEntity().getDepartureTime());
+            bookedInfo.setArrivalTime(ticketEntity.getFlightEntity().getArrivalTime());
+            bookedInfo.setArrivalAirportName(airportRepository.findById(ticketEntity.getFlightEntity().getArrivalId()).get().getName());
+            bookedInfo.setDepartureAirportName(airportRepository.findById(ticketEntity.getFlightEntity().getDepartureId()).get().getName());
+            bookedInfo.setAirlineName(ticketEntity.getFlightEntity().getPlaneEntity().getAirlineEntity().getName());
+            if(ticketEntity.getLuggageEntity() == null){
+                bookedInfo.setLuggage(0);
+            }else {
+                bookedInfo.setLuggage(ticketEntity.getLuggageEntity().getWeight());
+            }
+            ticketBookedInfos.add(bookedInfo);
+        }
+        return ticketBookedInfos;
+    }
+
 
     public void sendEmail(TicketBookedInfo ticketBookedInfo, UserEntity user) throws MessagingException {
         Map<String, Object> placeholders = new HashMap<>();
@@ -97,6 +127,7 @@ public class TicketServiceImpl implements TicketService {
         placeholders.put("arrivalAirportName", ticketBookedInfo.getArrivalAirportName());
         placeholders.put("departureAirportName", ticketBookedInfo.getDepartureAirportName());
         placeholders.put("airlineName", ticketBookedInfo.getAirlineName());
+        placeholders.put("luggage", ticketBookedInfo.getLuggage());
 
         MailBody mailBody = MailBody.builder()
                 .to(user.getEmail())
