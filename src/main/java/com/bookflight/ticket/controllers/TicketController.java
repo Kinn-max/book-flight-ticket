@@ -24,27 +24,7 @@ public class TicketController {
     private JWTHelper jwtHelper;
     @Autowired
     private TicketService ticketService;
-    @PostMapping("/book")
-    public ResponseEntity<?> bookFlight(@Valid @RequestBody TicketRequest ticketRequest, BindingResult result, HttpServletRequest request) {
-        try {
-            if (result.hasErrors()) {
-                List<String> errorMessages = result.getFieldErrors()
-                        .stream()
-                        .map(FieldError::getDefaultMessage)
-                        .collect(Collectors.toList());
-                return ResponseEntity.badRequest().body(errorMessages);
-            }
-            String token = request.getHeader("Authorization").substring(7);
-            Long userId = jwtHelper.extractUserId(token);
-            if(userId == null){
-                return ResponseEntity.badRequest().body("You need to log in first!");
-            }
-            ticketService.bookTicket(ticketRequest, userId);
-            return ResponseEntity.ok().body("Booking flight successful");
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
     @GetMapping("/by-user")
     public ResponseEntity<?> getAllTickedByUserId( HttpServletRequest request) {
         try {

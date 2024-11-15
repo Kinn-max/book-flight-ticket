@@ -47,6 +47,7 @@ public class TicketEntity {
     @JoinColumn(name = "flight_id")
     private FlightEntity flightEntity;
 
-    @Column(name = "seat_id")
-    private Long seatId;
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    private SeatEntity seat;
 }
