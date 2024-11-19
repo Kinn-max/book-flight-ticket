@@ -53,27 +53,7 @@ export default function NavbarWeb() {
             console.error('Error:', error);
         }
     };
-    const [loading,setLoading] = useState(false)
-    useEffect(() => {
-        const fetchData = async () => {
-        setLoading(true)
-            try {
-                const data = await login();
-                if (data) {
-                    console.log(data)
-                }
-            } catch (error) {
-              console.log(error)
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        fetchData();
-    }, []);
-   if(loading) return(
-         <Loading/>
-    )
   return (
     <div>
         <Header
