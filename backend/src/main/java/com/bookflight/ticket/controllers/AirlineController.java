@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class AirlineController {
     private AirlineService airlineService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createAirline(@RequestBody @Valid AirlineRequest airlineRequest, BindingResult result){
+    public ResponseEntity<?> createAirline(@ModelAttribute @Valid AirlineRequest airlineRequest, BindingResult result) throws IOException {
         try {
             if (result.hasErrors()) {
                 List<String> errorMessages = result.getFieldErrors()
