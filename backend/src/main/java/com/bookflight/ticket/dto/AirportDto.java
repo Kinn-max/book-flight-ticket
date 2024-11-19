@@ -17,4 +17,6 @@ public class AirportDto {
     @NotBlank(message = "Airport location cannot be blank! ")
     private String location;
 
+    @NotBlank(message = "Airport code cannot be blank! ")
+    private String code;
 }

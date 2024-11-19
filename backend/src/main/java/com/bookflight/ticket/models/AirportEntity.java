@@ -26,6 +26,9 @@ public class AirportEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "code")
+    private String code;
+
     //
     @ManyToMany(mappedBy = "airportEntityList", fetch = FetchType.LAZY)
     private List<FlightEntity> flightEntityList = new ArrayList<>();

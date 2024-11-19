@@ -23,6 +23,9 @@ public class AirlineEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "logo")
+    private String logo;
+
     //
 
     @OneToMany(mappedBy = "airlineEntity", fetch = FetchType.LAZY)

@@ -24,6 +24,7 @@ public class AirportServiceImpl implements AirportService {
         AirportEntity airportEntity = AirportEntity.builder()
                 .name(airportDto.getName())
                 .location(airportDto.getLocation())
+                .code(airportDto.getCode())
                 .build();
         airportRepository.save(airportEntity);
     }
