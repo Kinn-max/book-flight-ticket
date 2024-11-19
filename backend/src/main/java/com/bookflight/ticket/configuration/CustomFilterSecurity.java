@@ -39,6 +39,7 @@ public class CustomFilterSecurity {
                 .authorizeHttpRequests( auth->{
                     auth
                             .requestMatchers("/api/auth/**", "/api/payment/booking").permitAll()
+                            .requestMatchers(HttpMethod.GET,"/api/airport").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers(HttpMethod.POST,"/api/airport/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers(HttpMethod.DELETE,"/api/airport/delete/**").hasAuthority(RoleType.ADMIN.name())
                             //book

@@ -40,7 +40,9 @@ public class AuthServiceImpl implements AuthService {
     private ModelMapper modelMapper;
 
     @Override
-    public boolean checkLogin(String email, String password) {
+    public boolean checkLogin(String email, String password) throws Exception{
+        if (userRepository.findByEmail(email) == null)
+            throw new Exception("Incorrect account or password");
         var user = userRepository.findByEmail(email);
         return passwordEncoder.matches(password, user.getPassword());
     }

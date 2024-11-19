@@ -11,7 +11,9 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/*" element={<CommonWeb />} />
+          <Route path="/*" element={<CommonWeb />} >
+  
+          </Route>
           <Route path="/admin/*" element={<CommonAdmin />}>
             <Route path="flight" element={<FlightComponent />} />
             <Route path="airport" element={<AirportComponent />} />

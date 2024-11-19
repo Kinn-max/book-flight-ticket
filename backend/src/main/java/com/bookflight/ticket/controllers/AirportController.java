@@ -3,6 +3,7 @@ package com.bookflight.ticket.controllers;
 
 import com.bookflight.ticket.dto.AirportDto;
 import com.bookflight.ticket.dto.response.APIResponse;
+import com.bookflight.ticket.dto.response.AirportResponse;
 import com.bookflight.ticket.services.AirportService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,15 @@ public class AirportController {
         apiResponse.setCode(400);
         apiResponse.setMessage("Delete failed");
         return apiResponse;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAllAirports () {
+        try {
+            List<AirportResponse> airportResponseList = airportService.getAllAirports();
+            return ResponseEntity.ok(airportResponseList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

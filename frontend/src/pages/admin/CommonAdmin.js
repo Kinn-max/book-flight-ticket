@@ -44,9 +44,9 @@ export default function CommonAdmin() {
             >
             <SidebarComponent/>
             <Layout>
-             <Navbar/>
-            <ContentComponent/>
-        </Layout>
+              <Navbar/>
+              <ContentComponent/>
+            </Layout>
         </Layout>
     );
 

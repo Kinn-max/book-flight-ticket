@@ -7,7 +7,7 @@ import com.bookflight.ticket.dto.response.UserResponse;
 import com.bookflight.ticket.models.UserEntity;
 
 public interface AuthService {
-    boolean checkLogin(String email, String password);
+    boolean checkLogin(String email, String password)throws Exception;
     void signup(SignUpRequest signUpRequest) throws Exception;
     JwtAuthenticationResponse login(String email );
     UserResponse getProfile();

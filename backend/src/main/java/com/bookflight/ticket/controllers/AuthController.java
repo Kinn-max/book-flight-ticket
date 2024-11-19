@@ -20,11 +20,15 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
-        if(authService.checkLogin(loginRequest.getEmail(), loginRequest.getPassword())) {
-            JwtAuthenticationResponse user = authService.login(loginRequest.getEmail());
-            return ResponseEntity.ok(user);
-        } else{
-            return ResponseEntity.badRequest().body("Invalid email or password");
+        try {
+            if(authService.checkLogin(loginRequest.getEmail(), loginRequest.getPassword())) {
+                JwtAuthenticationResponse user = authService.login(loginRequest.getEmail());
+                return ResponseEntity.ok(user);
+            } else{
+                return ResponseEntity.badRequest().body("Invalid email or password");
+            }
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

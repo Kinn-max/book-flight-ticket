@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   DesktopOutlined,
@@ -23,21 +22,24 @@ const items = [
 ];
 
 const SidebarComponent = ({ collapsed, onCollapse }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleMenuClick = ({ key }) => {
-      navigate(`/admin${key}`); 
-    };
+  const handleMenuClick = ({ key }) => {
+    navigate(`/admin${key}`); 
+  };
+
   return (
-    <Sider
-      collapsible
-      collapsed={collapsed}
-      onCollapse={onCollapse} 
-    >
-      <div className="demo-logo-vertical " />
+    <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+      <div>
+        <img 
+          src='https://d1785e74lyxkqq.cloudfront.net/_next/static/v2/9/97f3e7a54e9c6987283b78e016664776.svg' 
+          alt='Logo'
+        />
+      </div>
+      <div className="demo-logo-vertical" />
       <Menu
         theme="dark"
-        defaultSelectedKeys={['/admin/flights']}
+        defaultSelectedKeys={['/admin/flight']} 
         onClick={handleMenuClick} 
         mode="inline"
         items={items}
