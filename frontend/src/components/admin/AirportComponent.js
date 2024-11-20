@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Table, Tooltip, Popconfirm, message, Form, Input } from 'antd';
-import { addAirport, getAllAirport } from '../../api/AirportApi';
+import { addAirport, deleteAirport, getAirportById, getAllAirport } from '../../api/AirportApi';
 import Loading from '../../util/Loading';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,6 +12,12 @@ export default function AirportComponent() {
       title: 'Stt',
       dataIndex: 'stt',
       key: 'stt',
+    }
+    ,
+    {
+      title: 'Code',
+      dataIndex: 'code',
+      key: 'code',
     },
     {
       title: 'Name',
@@ -64,8 +70,9 @@ export default function AirportComponent() {
   const [data, setData] = useState([]);
   const [name, setName] = useState("")
   const [location, setLocation] = useState("")
+  const [code, setCode] = useState("")
   const [reload, setReload] = useState(false)
-
+  const [id, setId] = useState(null)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -75,6 +82,7 @@ export default function AirportComponent() {
           const tableData = apiData.map((airport, index) => ({
             key: airport.id, 
             stt: index + 1,
+            code: airport.code,
             name: airport.name,
             location: airport.location,
           }));
@@ -95,13 +103,36 @@ export default function AirportComponent() {
   const handleEdit = (record) => {
    
     console.log('Edit airport: ', record);
+
+    setId(record.key); 
+    setCode(record.code)
+    setName(record.name)
+    setLocation(record.location)
+    form.setFieldsValue({
+      code: record.code,
+      name: record.name,
+      location: record.location,
+    });
+    setOpen(true); 
+
   };
 
-  const handleDelete = (record) => {
-   
-    console.log('Delete airport: ', record);
-    message.success('Airport deleted successfully!');
-   
+  const handleDelete = async(record) => {
+    try {   
+      const result = await deleteAirport(record.key);
+      if(result.ok){
+        const infor = await result.text();
+        console.log(infor)
+        setReload(prev => !prev);
+        message.success(infor)
+      }else{
+        const data = await result.text();
+        message.error(data)
+      }
+    } catch (error) {
+      message.error("Error")
+    }
+  
   };
 
   const cancel = () => {
@@ -109,20 +140,35 @@ export default function AirportComponent() {
   };
   //form
   const handleCancel = () => {
+    setId(null)
+    setName("")
+    setLocation("")
+    setCode("")
+    form.resetFields();
     setOpen(false);
   };
   const onFinish = async() => {
     const data = {
+      id: id,
       name:name,
-      location:location
+      location:location,
+      code:code
     }
     try {   
         const result = await addAirport(data);
-        form.resetFields();
-        setName("")
-        setLocation("")
-        setReload(prev => !prev);
-        message.success(result)
+        if(result.ok){
+          const data = await result.text();
+          form.resetFields();
+          setId(null)
+          setName("")
+          setLocation("")
+          setCode("")
+          setReload(prev => !prev);
+          message.success(data)
+        }else{
+          const data = await result.json();
+          message.error(data)
+        }
       } catch (error) {
         console.error('Error:', error);
       }
@@ -160,6 +206,18 @@ export default function AirportComponent() {
           labelAlign="right" 
           form={form}
         >
+          <Form.Item
+          label="Mã sân bay"
+          name="code"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your airport code !',
+            },
+          ]}
+        >
+          <Input  value={code} onChange={(e)=>setCode(e.target.value)}/>
+        </Form.Item>
         <Form.Item
           label="Tên sân bay"
           name="name"

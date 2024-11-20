@@ -5,6 +5,7 @@ import CommonAdmin from './pages/admin/CommonAdmin';
 import CommonWeb from './pages/web/CommonWeb';
 import FlightComponent from './components/admin/FlightComponent';
 import AirportComponent from './components/admin/AirportComponent';
+import AirlineComponent from './components/admin/AirlineComponent';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/admin/*" element={<CommonAdmin />}>
             <Route path="flight" element={<FlightComponent />} />
             <Route path="airport" element={<AirportComponent />} />
+            <Route path="airline" element={<AirlineComponent />} />
           </Route>
         </Routes>
       </BrowserRouter>

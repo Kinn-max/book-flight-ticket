@@ -16,9 +16,9 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem('Quản lý chuyến bay', '/flight', <PieChartOutlined />),
   getItem('Quản lý sân bay', '/airport', <DesktopOutlined />),
-  getItem('Files', '3', <FileOutlined />),
+  getItem('Quản lý hãng máy bay', '/airline', <FileOutlined />),
+  getItem('Quản lý chuyến bay', '/flight', <PieChartOutlined />),
 ];
 
 const SidebarComponent = ({ collapsed, onCollapse }) => {
