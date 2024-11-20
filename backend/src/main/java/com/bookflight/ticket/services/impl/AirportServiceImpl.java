@@ -22,6 +22,7 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public void createAirport(AirportDto airportDto) {
         AirportEntity airportEntity = AirportEntity.builder()
+                .id(airportDto.getId())
                 .name(airportDto.getName())
                 .location(airportDto.getLocation())
                 .code(airportDto.getCode())
@@ -50,6 +51,13 @@ public class AirportServiceImpl implements AirportService {
             airportResponses.add(airportResponse);
         }
         return airportResponses;
+    }
+
+    @Override
+    public AirportResponse getAirportById(Long id) throws Exception {
+        AirportEntity airportEntity = airportRepository.findById(id).orElseThrow(()-> new Exception("Airport not found"));
+        AirportResponse airportResponse = modelMapper.map(airportEntity, AirportResponse.class);
+        return airportResponse;
     }
 
 }

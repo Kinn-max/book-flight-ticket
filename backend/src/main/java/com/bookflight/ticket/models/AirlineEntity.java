@@ -23,7 +23,8 @@ public class AirlineEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "logo")
+    @Column(name = "logo",columnDefinition = "LONGTEXT")
+    @Lob
     private String logo;
 
     //

@@ -20,9 +20,10 @@ import java.util.stream.Collectors;
 public class AirportController {
     @Autowired
     private AirportService airportService;
+
     @PostMapping("/create")
-    public ResponseEntity<?> createAirport (@Valid @RequestBody AirportDto airportDto,
-                                         BindingResult result) {
+    public ResponseEntity<?> createAirport(@Valid @RequestBody AirportDto airportDto,
+                                           BindingResult result) {
         try {
             if (result.hasErrors()) {
                 List<String> errorMessages = result.getFieldErrors()
@@ -37,25 +38,35 @@ public class AirportController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @DeleteMapping("/delete/{id}")
-    public APIResponse<String> deleteAirport(@PathVariable("id") Long id) {
-        boolean checkDelete = airportService.deleteAirport(id);
-        APIResponse<String> apiResponse = new APIResponse();
-        if (checkDelete) {
-            apiResponse.setCode(200);
-            apiResponse.setMessage("Delete successfully");
-            return apiResponse;
+    public ResponseEntity<?> deleteAirport(@PathVariable("id") Long id) {
+        try {
+            boolean checkDelete = airportService.deleteAirport(id);
+            if (checkDelete) {
+                return ResponseEntity.ok("Airport deleted !");
+            }
+            return ResponseEntity.badRequest().body(" Error deleting airport !");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        apiResponse.setCode(400);
-        apiResponse.setMessage("Delete failed");
-        return apiResponse;
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAllAirports () {
+    public ResponseEntity<?> getAllAirports() {
         try {
             List<AirportResponse> airportResponseList = airportService.getAllAirports();
             return ResponseEntity.ok(airportResponseList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAirportById(@PathVariable("id") Long id) {
+        try {
+            AirportResponse  airportResponse = airportService.getAirportById(id);
+            return ResponseEntity.ok(airportResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

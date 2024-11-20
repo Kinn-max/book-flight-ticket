@@ -1,6 +1,8 @@
 package com.bookflight.ticket.controllers;
 
 import com.bookflight.ticket.dto.request.AirlineRequest;
+import com.bookflight.ticket.dto.response.AirlineResponse;
+import com.bookflight.ticket.dto.response.AirportResponse;
 import com.bookflight.ticket.services.AirlineService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,15 @@ public class AirlineController {
             return ResponseEntity.badRequest().body("Airline not found");
         }
         catch (Exception e){
+            return ResponseEntity.badRequest().body("It is dependent on the flight!");
+        }
+    }
+    @GetMapping("")
+    public ResponseEntity<?> getAllAirlines() {
+        try {
+            List<AirlineResponse> airportResponseList = airlineService.getAllAirlines();
+            return ResponseEntity.ok(airportResponseList);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

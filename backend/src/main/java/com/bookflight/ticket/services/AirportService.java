@@ -9,4 +9,5 @@ public interface AirportService {
     void createAirport(AirportDto airportDto);
     boolean deleteAirport(Long id);
     List<AirportResponse> getAllAirports();
+    AirportResponse getAirportById(Long id) throws Exception;
 }

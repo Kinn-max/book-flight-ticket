@@ -20,7 +20,7 @@ export default function AirlineComponent() {
                     key: airline.id,
                     stt: index + 1,
                     name: airline.name,
-                    logo: airline.logo,
+                    logo: `${airline.logo}`,
                 }));
                 setData(tableData);
             }
@@ -79,8 +79,15 @@ export default function AirlineComponent() {
 
         const formData = new FormData();
         formData.append('airlineName', values.airlineName);
-        if (fileList[0].originFileObj) {
-            formData.append('logo', fileList[0].originFileObj);
+        const file = fileList[0].originFileObj;
+        const base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+        if (base64) {
+            formData.append('logo',base64);
         }
         if (editRecord) {
             formData.append('id', editRecord.key);
@@ -93,7 +100,6 @@ export default function AirlineComponent() {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
                 },
                 body: formData
             });
@@ -134,7 +140,7 @@ export default function AirlineComponent() {
             title: 'Logo',
             dataIndex: 'logo',
             key: 'logo',
-            render: (logo) => <img src={logo} alt="Logo" style={{ width: 50, height: 50 }} />,
+            render: (logo) => <img src={logo} alt="Airline Logo" style={{ width: 50, height: 50 }} />,
         },
         {
             title: 'Option',
