@@ -22,9 +22,8 @@ public class AirlineServiceImpl implements AirlineService {
     private ModelMapper modelMapper;
     @Override
     public void createAirline(AirlineRequest airlineRequest) throws IOException {
-        String base64String = Base64.getEncoder().encodeToString(airlineRequest.getLogo().getBytes());
         AirlineEntity airlineEntity = AirlineEntity.builder()
-                .logo(base64String)
+                .logo(airlineRequest.getLogo())
                 .name(airlineRequest.getAirlineName())
                 .id(airlineRequest.getId())
                 .build();
