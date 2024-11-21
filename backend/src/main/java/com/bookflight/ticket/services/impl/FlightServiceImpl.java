@@ -116,6 +116,8 @@ public class FlightServiceImpl implements FlightService {
             AirportResponse airportResponse = new AirportResponse();
             airportResponse.setId(airport.getId());
             airportResponse.setName(airport.getName());
+            airportResponse.setLocation(airport.getLocation());
+            airportResponse.setCode(airport.getCode());
             airportResponseList.add(airportResponse);
         });
         infoSearchResponse.setArrivalAirports(airportResponseList);

@@ -10,12 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class AirlineServiceImpl implements AirlineService {
@@ -25,21 +22,12 @@ public class AirlineServiceImpl implements AirlineService {
     private ModelMapper modelMapper;
     @Override
     public void createAirline(AirlineRequest airlineRequest) throws IOException {
-//        String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\uploads";
-//
-//        System.out.println(UPLOAD_DIRECTORY);
-//
-//        StringBuilder fileNames = new StringBuilder();
-//        String name = UUID.randomUUID() + airlineRequest.getLogo().getOriginalFilename();
-//        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, name);
-//        fileNames.append(name);
-//        Files.write(fileNameAndPath, airlineRequest.getLogo().getBytes());
-
+        String base64String = Base64.getEncoder().encodeToString(airlineRequest.getLogo().getBytes());
         AirlineEntity airlineEntity = AirlineEntity.builder()
-                        .logo(airlineRequest.getLogo())
-                        .name(airlineRequest.getAirlineName())
-                        .id(airlineRequest.getId())
-                        .build();
+                .logo(base64String)
+                .name(airlineRequest.getAirlineName())
+                .id(airlineRequest.getId())
+                .build();
         airlineRepository.save(airlineEntity);
     }
 

@@ -15,10 +15,12 @@ public class FlightResponse {
     private String departureLocation;
     private String arrivalLocation;
     private String arrivalAirport;
+    private String codeDepartAirport;
+    private String codeArriAirport;
     private String airline;
+    private String logoAirline;
     private PlaneResponse plane;
     private double ecoPrice;
     private double busPrice;
     List<SeatResponse> seats;
-
 }

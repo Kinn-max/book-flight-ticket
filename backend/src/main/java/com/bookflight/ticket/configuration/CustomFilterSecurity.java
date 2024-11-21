@@ -59,7 +59,7 @@ public class CustomFilterSecurity {
                             .requestMatchers("/api/auth/**", "/api/payment/booking").permitAll()
                             .requestMatchers(HttpMethod.GET,"/api/airport").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers(HttpMethod.POST,"/api/airport/create").hasAuthority(RoleType.ADMIN.name())
-                            .requestMatchers(HttpMethod.GET,"/api/airport/**").hasAuthority(RoleType.ADMIN.name())
+                            .requestMatchers(HttpMethod.GET,"/api/airport/detail/**").permitAll()
                             .requestMatchers(HttpMethod.DELETE,"/api/airport/delete/**").hasAuthority(RoleType.ADMIN.name())
                             //airline
                             .requestMatchers(HttpMethod.GET,"/api/admin/airline").hasAuthority(RoleType.ADMIN.name())

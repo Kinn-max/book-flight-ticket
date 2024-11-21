@@ -11,5 +11,5 @@ public class AirlineRequest {
     @NotEmpty(message = "Name cannot empty")
     private String airlineName;
 
-    private String logo;
+    private MultipartFile logo;
 }
