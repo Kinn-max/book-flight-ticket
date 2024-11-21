@@ -16,6 +16,7 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
+  getItem('Quản lý máy bay', '/plane', <DesktopOutlined />),
   getItem('Quản lý sân bay', '/airport', <DesktopOutlined />),
   getItem('Quản lý hãng máy bay', '/airline', <FileOutlined />),
   getItem('Quản lý chuyến bay', '/flight', <PieChartOutlined />),

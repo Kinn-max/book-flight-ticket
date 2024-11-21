@@ -22,7 +22,7 @@ public class FlightConverter {
     @Autowired
     private ModelMapper modelMapper;
 
-    public FlightResponse toFlightResponse(FlightEntity flightEntity) {
+    public FlightResponse toFlightResponse(FlightEntity flightEntity,boolean check) {
         FlightResponse flightResponse = modelMapper.map(flightEntity, FlightResponse.class);
         List<AirportEntity> airportEntityList = flightEntity.getAirportEntityList();
         for (AirportEntity airportEntity : airportEntityList) {
@@ -36,10 +36,13 @@ public class FlightConverter {
         }
         PlaneResponse planeResponse = planeConverter.toPlaneResponse(flightEntity.getPlaneEntity());
         flightResponse.setPlane(planeResponse);
-        List<SeatEntity> seatEntityList = flightEntity.getSeatEntityList();
-        List<SeatResponse> seatResponseList = seatConverter.toSeatResponse(seatEntityList,flightEntity);
-        flightResponse.setSeats(seatResponseList);
+        if(check){
+            List<SeatEntity> seatEntityList = flightEntity.getSeatEntityList();
+            List<SeatResponse> seatResponseList = seatConverter.toSeatResponse(seatEntityList,flightEntity);
+            flightResponse.setSeats(seatResponseList);
+        }
         flightResponse.setAirline(flightEntity.getPlaneEntity().getAirlineEntity().getName());
+        flightResponse.setStatus(flightEntity.getStatus());
         return flightResponse;
     }
 }

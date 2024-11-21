@@ -13,4 +13,5 @@ import java.util.List;
 public interface FlightRepository extends JpaRepository<FlightEntity,Long> {
     @Query("SELECT f FROM  FlightEntity f WHERE f.departureId = :departureAirport AND f.arrivalId = :arrivalAirport AND FUNCTION('DATE', f.departureTime) = :date AND f.departureTime > CURRENT_TIMESTAMP")
     List<FlightEntity> searchFlight(Long departureAirport, Long arrivalAirport, Date date);
-}
+    List<FlightEntity> findAllByStatus(Boolean status);
+ }

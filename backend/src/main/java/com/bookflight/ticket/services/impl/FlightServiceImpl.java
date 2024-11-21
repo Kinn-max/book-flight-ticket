@@ -6,7 +6,6 @@ import com.bookflight.ticket.dto.FlightDto;
 import com.bookflight.ticket.dto.request.FlightRequest;
 import com.bookflight.ticket.dto.response.AirportResponse;
 import com.bookflight.ticket.dto.response.FlightResponse;
-import com.bookflight.ticket.dto.response.InfoSearchResponse;
 import com.bookflight.ticket.models.AirportEntity;
 import com.bookflight.ticket.models.FlightEntity;
 import com.bookflight.ticket.models.PlaneEntity;
@@ -61,6 +60,7 @@ public class FlightServiceImpl implements FlightService {
             Date arrivalTime = formatter.parse(flightDto.getArrivalTime());
 
             FlightEntity flightEntity = FlightEntity.builder()
+                    .id(flightDto.getId())
                     .departureTime(departureTime)
                     .arrivalTime(arrivalTime)
                     .code(flightDto.getCode())
@@ -70,6 +70,7 @@ public class FlightServiceImpl implements FlightService {
                     .busPrice(flightDto.getBusPrice())
                     .ecoPrice(flightDto.getEcoPrice())
                     .airportEntityList(airportEntityList)
+                    .status(true)
                     .build();
             flightRepository.save(flightEntity);
 
@@ -103,24 +104,8 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightResponse getDetailFlight(Long id) throws Exception {
         FlightEntity flightEntity = flightRepository.findById(id).orElseThrow(() -> new Exception("Flight not found !"));
-        FlightResponse  flightResponse = flightConverter.toFlightResponse(flightEntity);
+        FlightResponse  flightResponse = flightConverter.toFlightResponse(flightEntity,true);
         return flightResponse;
-    }
-
-    @Override
-    public InfoSearchResponse getInfoSearch() {
-        InfoSearchResponse infoSearchResponse = new InfoSearchResponse();
-        List<AirportResponse> airportResponseList = new ArrayList<>();
-        List<AirportEntity> airportDtoList = airportRepository.findAll();
-        airportDtoList.forEach((airport) -> {
-            AirportResponse airportResponse = new AirportResponse();
-            airportResponse.setId(airport.getId());
-            airportResponse.setName(airport.getName());
-            airportResponseList.add(airportResponse);
-        });
-        infoSearchResponse.setArrivalAirports(airportResponseList);
-        infoSearchResponse.setDepartureAirports(airportResponseList);
-        return infoSearchResponse;
     }
 
     @Override
@@ -136,7 +121,7 @@ public class FlightServiceImpl implements FlightService {
 
             List<FlightEntity> flightEntityList = flightRepository.searchFlight(flightRequest.getDepartureAirport(), flightRequest.getArrivalAirport(), departureTime);
             flightEntityList.forEach((flightEntity) -> {
-                FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity);
+                FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity,false);
                 flightResponseList.add(flightResponse);
             });
             return flightResponseList;
@@ -148,11 +133,22 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightResponse> getAllFlights() throws Exception {
+    public List<FlightResponse> getAllFlightsByUser() throws Exception {
+        List<FlightResponse> flightResponseList = new ArrayList<>();
+        List<FlightEntity> flightEntityList = flightRepository.findAllByStatus(true);
+        flightEntityList.forEach((flightEntity) -> {
+            FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity,false);
+            flightResponseList.add(flightResponse);
+        });
+        return flightResponseList;
+    }
+
+    @Override
+    public List<FlightResponse> getAllFlightsByAdmin() throws Exception {
         List<FlightResponse> flightResponseList = new ArrayList<>();
         List<FlightEntity> flightEntityList = flightRepository.findAll();
         flightEntityList.forEach((flightEntity) -> {
-            FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity);
+            FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity,false);
             flightResponseList.add(flightResponse);
         });
         return flightResponseList;

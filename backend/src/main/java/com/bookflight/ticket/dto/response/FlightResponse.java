@@ -19,6 +19,7 @@ public class FlightResponse {
     private PlaneResponse plane;
     private double ecoPrice;
     private double busPrice;
+    private Boolean status;
     List<SeatResponse> seats;
 
 }

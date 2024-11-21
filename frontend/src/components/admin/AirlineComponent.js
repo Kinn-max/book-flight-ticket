@@ -76,23 +76,29 @@ export default function AirlineComponent() {
             message.error('Please fill in all required fields!');
             return;
         }
-
+    
+        let base64 = null;
+        if (fileList[0].originFileObj) {
+            base64 = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileList[0].originFileObj);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        } else if (fileList[0].url) {
+            // Existing base64 image
+            base64 = fileList[0].url;
+        }
+    
         const formData = new FormData();
         formData.append('airlineName', values.airlineName);
-        const file = fileList[0].originFileObj;
-        const base64 = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
         if (base64) {
-            formData.append('logo',base64);
+            formData.append('logo', base64);
         }
         if (editRecord) {
             formData.append('id', editRecord.key);
         }
-
+    
         setFormLoading(true);
         try {
             const token = localStorage.getItem('jwtToken');
@@ -122,7 +128,6 @@ export default function AirlineComponent() {
             setFormLoading(false);
         }
     };
-
     const onFileChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
     const columns = [

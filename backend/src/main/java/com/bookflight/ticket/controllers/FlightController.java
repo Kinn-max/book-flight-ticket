@@ -1,11 +1,9 @@
 package com.bookflight.ticket.controllers;
 
 
-import com.bookflight.ticket.dto.AirportDto;
 import com.bookflight.ticket.dto.FlightDto;
 import com.bookflight.ticket.dto.request.FlightRequest;
 import com.bookflight.ticket.dto.response.FlightResponse;
-import com.bookflight.ticket.dto.response.InfoSearchResponse;
 import com.bookflight.ticket.services.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +36,6 @@ public class FlightController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/search")
-    public ResponseEntity<?> getInfoSearch () {
-        try {
-            InfoSearchResponse infoSearchResponse = flightService.getInfoSearch();
-            return ResponseEntity.ok(infoSearchResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     @PostMapping("/search")
     public ResponseEntity<?> searchFlight (@Valid @RequestBody FlightRequest flightRequest, BindingResult result) {
@@ -74,11 +63,19 @@ public class FlightController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-    @GetMapping
-    public ResponseEntity<?> getAllFlights() {
+    @GetMapping("/by-admin")
+    public ResponseEntity<?> getAllFlightsAdmin() {
         try {
-            List<FlightResponse> flightResponses = flightService.getAllFlights();
+            List<FlightResponse> flightResponses = flightService.getAllFlightsByAdmin();
+            return ResponseEntity.ok(flightResponses);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/by-user")
+    public ResponseEntity<?> getAllFlightsUser() {
+        try {
+            List<FlightResponse> flightResponses = flightService.getAllFlightsByUser();
             return ResponseEntity.ok(flightResponses);
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

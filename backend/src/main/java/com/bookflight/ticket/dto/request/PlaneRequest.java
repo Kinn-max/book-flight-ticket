@@ -11,17 +11,18 @@ import java.util.List;
 
 @Data
 public class PlaneRequest {
+    private  Long id;
     @NotNull
     @JsonProperty("eco_class")
-    private int ecoClass;
+    private Integer ecoClass;
 
     @NotNull
     @JsonProperty("bus_class")
-    private int busClass;
+    private Integer busClass;
 
     @NotEmpty(message = "Name cannot empty")
     private String name;
 
-    @NotNull(message = "Cannot empty")
+    @NotNull(message = "Airline cannot empty")
     private Long airlineId;
 }

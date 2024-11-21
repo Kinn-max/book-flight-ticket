@@ -61,13 +61,16 @@ public class CustomFilterSecurity {
                             .requestMatchers(HttpMethod.POST,"/api/airport/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers(HttpMethod.GET,"/api/airport/**").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers(HttpMethod.DELETE,"/api/airport/delete/**").hasAuthority(RoleType.ADMIN.name())
+                            // plane
+                            .requestMatchers(HttpMethod.GET,"/api/admin/plane").hasAuthority(RoleType.ADMIN.name())
+                            .requestMatchers(HttpMethod.DELETE,"/api/admin/plane/**").hasAuthority(RoleType.ADMIN.name())
                             //airline
                             .requestMatchers(HttpMethod.GET,"/api/admin/airline").hasAuthority(RoleType.ADMIN.name())
                             //book
                             .requestMatchers("/api/ticket/by-user").hasAnyAuthority(RoleType.USER.name())
                             .requestMatchers("/api/payment/create_payment_vnpay").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             //flight
-                            .requestMatchers("/api/flight").permitAll()
+                            .requestMatchers("/api/flight/by-admin").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/detail/**").permitAll()
                             .requestMatchers("/api/flight/search").permitAll()
                             .requestMatchers(HttpMethod.POST,"/api/flight/create").hasAuthority(RoleType.ADMIN.name())

@@ -11,5 +11,5 @@ public class PlaneResponse {
     private int ecoClass;
     private int busClass;
     private String name;
-
+    private String nameAirline;
 }

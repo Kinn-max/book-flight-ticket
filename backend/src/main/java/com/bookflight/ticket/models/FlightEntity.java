@@ -44,6 +44,9 @@ public class FlightEntity {
     @Column(name = "bus_price")
     private double busPrice;
 
+    @Column(name = "status")
+    private Boolean status;
+
 
     @ManyToOne
     @JoinColumn(name = "plane_id")

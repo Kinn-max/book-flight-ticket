@@ -1,10 +1,10 @@
 
 export async function getAllFlights() {
-    const link = `http://localhost:8080/api/flight`;
+    const link = `http://localhost:8081/api/flight/by-admin`;
     const token = localStorage.getItem('jwtToken');
     try {
         const response = await fetch(link, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
