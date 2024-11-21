@@ -29,9 +29,11 @@ public class FlightConverter {
             if(airportEntity.getId() == flightEntity.getArrivalId()){
                 flightResponse.setArrivalAirport(airportEntity.getName());
                 flightResponse.setArrivalLocation(airportEntity.getLocation());
+                flightResponse.setCodeArriAirport(airportEntity.getCode());
             }else{
                 flightResponse.setDepartureAirport(airportEntity.getName());
                 flightResponse.setDepartureLocation(airportEntity.getLocation());
+                flightResponse.setCodeDepartAirport(airportEntity.getCode());
             }
         }
         PlaneResponse planeResponse = planeConverter.toPlaneResponse(flightEntity.getPlaneEntity());
@@ -43,6 +45,7 @@ public class FlightConverter {
         }
         flightResponse.setAirline(flightEntity.getPlaneEntity().getAirlineEntity().getName());
         flightResponse.setStatus(flightEntity.getStatus());
+        flightResponse.setLogoAirline(flightEntity.getPlaneEntity().getAirlineEntity().getLogo());
         return flightResponse;
     }
 }

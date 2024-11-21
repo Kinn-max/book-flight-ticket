@@ -62,7 +62,7 @@ public class AirportController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<?> getAirportById(@PathVariable("id") Long id) {
         try {
             AirportResponse  airportResponse = airportService.getAirportById(id);
