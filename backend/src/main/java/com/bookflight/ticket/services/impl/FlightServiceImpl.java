@@ -75,7 +75,7 @@ public class FlightServiceImpl implements FlightService {
 
             int ecoClass = flightEntity.getPlaneEntity().getEcoClass();
             int busClass = flightEntity.getPlaneEntity().getBusClass();
-            for (int i = 0; i < busClass; i++) {
+            for (int i = 0; i < busClass / 3; i++) {
                 for(char c = 'A'; c <= 'C'; c++) {
                     SeatEntity seatEntity = new SeatEntity();
                     seatEntity.setSeatClass("Business Class");
@@ -85,7 +85,7 @@ public class FlightServiceImpl implements FlightService {
                 }
             }
 
-            for (int i = 0; i < ecoClass; i++) {
+            for (int i = 0; i < ecoClass / 9; i++) {
                 for(char c = 'A'; c <= 'I'; c++) {
                     SeatEntity seatEntity = new SeatEntity();
                     seatEntity.setSeatClass("Economy Class");
