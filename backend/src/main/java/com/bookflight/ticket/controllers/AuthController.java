@@ -1,11 +1,8 @@
 package com.bookflight.ticket.controllers;
 
-import com.bookflight.ticket.configuration.JWTHelper;
 import com.bookflight.ticket.dto.request.LoginRequest;
 import com.bookflight.ticket.dto.request.SignUpRequest;
-import com.bookflight.ticket.dto.response.APIResponse;
 import com.bookflight.ticket.dto.response.JwtAuthenticationResponse;
-import com.bookflight.ticket.models.UserEntity;
 import com.bookflight.ticket.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
