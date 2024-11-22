@@ -36,6 +36,7 @@ export default function FlightDetail() {
       const apiData = await getAllPlane();
       if (apiData) {
         setPlane(apiData);
+        console.log(apiData)
       }
     } catch (error) {
       console.log(error);
@@ -64,15 +65,17 @@ export default function FlightDetail() {
     try{
       const result = await createOrUpdateFlight(formattedValues);
       if(result.ok){
-        const infor = await result.json();
+        const infor = await result.text();
         console.log(infor)
         message.success(infor)
+        form.resetFields();
       }else{
         const data = await result.text();
         message.error(data)
       }
     }
     catch (error) {
+      console.log(error)
       message.error("Error")
     }
   };

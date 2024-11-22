@@ -51,7 +51,7 @@ public class FlightServiceImpl implements FlightService {
             }
         }
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date departureTime = formatter.parse(flightDto.getDepartureTime());
             Date arrivalTime = formatter.parse(flightDto.getArrivalTime());
