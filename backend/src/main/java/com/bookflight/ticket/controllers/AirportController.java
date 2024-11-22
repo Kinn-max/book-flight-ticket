@@ -2,7 +2,6 @@ package com.bookflight.ticket.controllers;
 
 
 import com.bookflight.ticket.dto.AirportDto;
-import com.bookflight.ticket.dto.response.APIResponse;
 import com.bookflight.ticket.dto.response.AirportResponse;
 import com.bookflight.ticket.services.AirportService;
 import jakarta.validation.Valid;
