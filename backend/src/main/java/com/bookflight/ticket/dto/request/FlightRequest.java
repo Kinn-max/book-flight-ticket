@@ -20,4 +20,8 @@ public class FlightRequest {
     @NotNull
     @JsonProperty("departure_time")
     private String departureTime;
+
+    @NotNull
+    @JsonProperty("seat_class")
+    private String seatClass;
 }

@@ -73,25 +73,33 @@ public class FlightServiceImpl implements FlightService {
 
             int ecoClass = flightEntity.getPlaneEntity().getEcoClass();
             int busClass = flightEntity.getPlaneEntity().getBusClass();
-            for (int i = 0; i < busClass / 3; i++) {
-                for(char c = 'A'; c <= 'C'; c++) {
+
+            int seatCounter = 0;
+            for (int i = 0; seatCounter < busClass; i++) {
+                for (char c = 'A'; c <= 'C'; c++) {
+                    if (seatCounter >= busClass) break;
                     SeatEntity seatEntity = new SeatEntity();
                     seatEntity.setSeatClass("Business Class");
-                    seatEntity.setSeatNumber(c + String.valueOf(i+1));
+                    seatEntity.setSeatNumber(c + String.valueOf(i + 1));
                     seatEntity.setFlightEntity(flightEntity);
                     seatRepository.save(seatEntity);
+                    seatCounter++;
                 }
             }
 
-            for (int i = 0; i < ecoClass / 9; i++) {
-                for(char c = 'A'; c <= 'I'; c++) {
+            seatCounter = 0;
+            for (int i = 0; seatCounter < ecoClass; i++) {
+                for (char c = 'A'; c <= 'I'; c++) {
+                    if (seatCounter >= ecoClass) break;
                     SeatEntity seatEntity = new SeatEntity();
                     seatEntity.setSeatClass("Economy Class");
-                    seatEntity.setSeatNumber(c + String.valueOf(i+1));
+                    seatEntity.setSeatNumber(c + String.valueOf(i + 1));
                     seatEntity.setFlightEntity(flightEntity);
                     seatRepository.save(seatEntity);
+                    seatCounter++; // Tăng số ghế đã tạo
                 }
             }
+
 
         } catch (ParseException e) {
             throw new RuntimeException("Error parsing date: " + e.getMessage());
@@ -117,7 +125,7 @@ public class FlightServiceImpl implements FlightService {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             Date departureTime = formatter.parse(flightRequest.getDepartureTime());
 
-            List<FlightEntity> flightEntityList = flightRepository.searchFlight(flightRequest.getDepartureAirport(), flightRequest.getArrivalAirport(), departureTime);
+            List<FlightEntity> flightEntityList = flightRepository.searchFlight(flightRequest.getDepartureAirport(), flightRequest.getArrivalAirport(), departureTime, flightRequest.getSeatClass());
             flightEntityList.forEach((flightEntity) -> {
                 FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity,false);
                 flightResponseList.add(flightResponse);
