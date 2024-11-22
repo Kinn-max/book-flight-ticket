@@ -44,5 +44,6 @@ public class FlightDto {
     @JsonProperty("bus_price")
     private double busPrice;
 
+    @JsonProperty("airport_list")
     private List<AirportDto> airportDtoList;
 }

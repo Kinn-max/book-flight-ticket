@@ -10,18 +10,19 @@ import {
 } from 'antd';
 import { getAllAirport } from '../../../api/AirportApi';
 import { getAllPlane } from '../../../api/PlaneApi';
+import { createOrUpdateFlight } from '../../../api/FlightApi';
 
 export default function FlightDetail() {
   const [airport, setAirport] = useState([]);
   const [planes, setPlane] = useState([]);
   const [form] = Form.useForm(); // Để quản lý form
-
+  const [id, setId] = useState(null);
+  const [airportDep, setAirportDep] = useState([]);
   // Fetch airport data
   const fetchAirport = async () => {
     try {
       const response = await getAllAirport();
       if (response) {
-        console.log(response);
         setAirport(response);
       }
     } catch (error) {
@@ -34,7 +35,6 @@ export default function FlightDetail() {
     try {
       const apiData = await getAllPlane();
       if (apiData) {
-        console.log(apiData);
         setPlane(apiData);
       }
     } catch (error) {
@@ -47,9 +47,34 @@ export default function FlightDetail() {
     fetchData();
   }, []);
 
-  const onFinish = (values) => {
-    console.log(values);
-    // Handle form submission here
+  const onFinish = async(values) => {
+    const { departure_time, arrival_time,departure_id,arrival_id, ...rest } = values;
+    const updatedAirportDep = [{ id: departure_id }, { id: arrival_id }];
+    setAirportDep(updatedAirportDep);
+
+    const formattedValues = {
+    ...rest,
+    departure_time: departure_time.format('YYYY-MM-DD HH:mm:ss'), 
+    arrival_time: arrival_time.format('YYYY-MM-DD HH:mm:ss'),
+    airport_list:updatedAirportDep,
+    departure_id:departure_id,
+    arrival_id:arrival_id
+  };
+  console.log(formattedValues)
+    try{
+      const result = await createOrUpdateFlight(formattedValues);
+      if(result.ok){
+        const infor = await result.json();
+        console.log(infor)
+        message.success(infor)
+      }else{
+        const data = await result.text();
+        message.error(data)
+      }
+    }
+    catch (error) {
+      message.error("Error")
+    }
   };
 
   return (
@@ -72,10 +97,10 @@ export default function FlightDetail() {
       }}
       onFinish={onFinish} // Khi submit form
     >
-      <Form.Item label="Mã máy bay" name="planeCode">
+      <Form.Item label="Mã máy bay" name="code">
         <Input />
       </Form.Item>
-      <Form.Item label="Sân bay đi" name="departureAirport" rules={[{ required: true, message: 'Please select a departure airport!' }]}>
+      <Form.Item label="Sân bay đi" name="departure_id" rules={[{ required: true, message: 'Please select a departure airport!' }]}>
         <Select>
           {airport.map((airport) => (
             <Select.Option key={airport.id} value={airport.id}>
@@ -84,7 +109,7 @@ export default function FlightDetail() {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item label="Sân bay đến" name="arrivalAirport" rules={[{ required: true, message: 'Please select an arrival airport!' }]}>
+      <Form.Item label="Sân bay đến" name="arrival_id" rules={[{ required: true, message: 'Please select an arrival airport!' }]}>
         <Select>
           {airport.map((airport) => (
             <Select.Option key={airport.id} value={airport.id}>
@@ -93,19 +118,19 @@ export default function FlightDetail() {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item label="Thời gian khởi hành" name="departureTime" rules={[{ required: true, message: 'Please select a departure time!' }]}>
+      <Form.Item label="Thời gian khởi hành" name="departure_time" rules={[{ required: true, message: 'Please select a departure time!' }]}>
         <DatePicker showTime />
       </Form.Item>
-      <Form.Item label="Thời gian đến" name="arrivalTime" rules={[{ required: true, message: 'Please select an arrival time!' }]}>
+      <Form.Item label="Thời gian đến" name="arrival_time" rules={[{ required: true, message: 'Please select an arrival time!' }]}>
         <DatePicker showTime />
       </Form.Item>
-      <Form.Item label="Giá ghế thường" name="economySeatPrice" rules={[{ required: true, message: 'Please input the economy seat price!' }]}>
+      <Form.Item label="Giá ghế thường" name="eco_price" rules={[{ required: true, message: 'Please input the economy seat price!' }]}>
         <InputNumber min={0} />
       </Form.Item>
-      <Form.Item label="Giá ghế thương gia" name="businessSeatPrice" rules={[{ required: true, message: 'Please input the business seat price!' }]}>
+      <Form.Item label="Giá ghế thương gia" name="bus_price" rules={[{ required: true, message: 'Please input the business seat price!' }]}>
         <InputNumber min={0} />
       </Form.Item>
-      <Form.Item label="Thuộc máy bay" name="planeId" rules={[{ required: true, message: 'Please select a plane!' }]}>
+      <Form.Item label="Thuộc máy bay" name="plane_id" rules={[{ required: true, message: 'Please select a plane!' }]}>
         <Select>
           {planes.map((plane) => (
             <Select.Option key={plane.id} value={plane.id}>

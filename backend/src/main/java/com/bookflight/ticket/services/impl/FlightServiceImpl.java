@@ -46,10 +46,7 @@ public class FlightServiceImpl implements FlightService {
 
         if (airportDtoList != null) {
             for (AirportDto airportDto : airportDtoList) {
-                AirportEntity airportEntity = new AirportEntity();
-                airportEntity.setId(airportDto.getId());
-                airportEntity.setName(airportDto.getName());
-                airportEntity.setLocation(airportDto.getLocation());
+                AirportEntity airportEntity = airportRepository.findById(airportDto.getId()).orElseThrow(() -> new RuntimeException("Airport not found"));
                 airportEntityList.add(airportEntity);
             }
         }
