@@ -43,6 +43,7 @@ public class FlightConverter {
             List<SeatResponse> seatResponseList = seatConverter.toSeatResponse(seatEntityList,flightEntity);
             flightResponse.setSeats(seatResponseList);
         }
+        flightResponse.setTicketId(flightResponse.getTicketId());
         flightResponse.setAirline(flightEntity.getPlaneEntity().getAirlineEntity().getName());
         flightResponse.setStatus(flightEntity.getStatus());
         flightResponse.setLogoAirline(flightEntity.getPlaneEntity().getAirlineEntity().getLogo());

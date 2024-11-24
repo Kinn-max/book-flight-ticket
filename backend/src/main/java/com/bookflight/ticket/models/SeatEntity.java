@@ -31,4 +31,7 @@ public class SeatEntity {
     @ManyToOne
     @JoinColumn(name = "flight_id")
     private FlightEntity flightEntity;
+
+    @OneToOne(mappedBy = "seat", cascade = CascadeType.ALL)
+    private TicketEntity ticketEntity;
 }

@@ -23,5 +23,6 @@ public class FlightResponse {
     private double ecoPrice;
     private double busPrice;
     private Boolean status;
+    private Long ticketId;
     List<SeatResponse> seats;
 }

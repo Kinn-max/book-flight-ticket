@@ -15,9 +15,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.bookflight.ticket.configuration.ConfigVNPay.vnp_Command;
@@ -48,6 +51,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private LuggageRepository luggageRepository;
+    @Autowired
+    private RevenueRepository revenueRepository;
 
     @Override
     public String createPayment(TicketRequest ticketRequest) throws Exception{
@@ -166,6 +171,22 @@ public class PaymentServiceImpl implements PaymentService {
                 .email(ticketRequest.getEmail())
                 .name(ticketRequest.getName())
                 .build();
+
+        LocalDate today = LocalDate.now();
+        BigDecimal ticketRevenue = BigDecimal.valueOf(vnp_Amount / 100);
+
+        Optional<RevenueEntity> optionalRevenue = revenueRepository.findByDate(today);
+        if (optionalRevenue.isPresent()) {
+            RevenueEntity revenue = optionalRevenue.get();
+            revenue.setTotalRevenue(revenue.getTotalRevenue().add(ticketRevenue));
+            revenueRepository.save(revenue);
+        } else {
+            RevenueEntity newRevenue = RevenueEntity.builder()
+                    .date(today)
+                    .totalRevenue(ticketRevenue)
+                    .build();
+            revenueRepository.save(newRevenue);
+        }
         TicketEntity result = ticketRepository.save(ticketEntity);
         if(result.getId() != null){
             seat.setAvailable(false);

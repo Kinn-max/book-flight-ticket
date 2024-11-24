@@ -1,8 +1,10 @@
 package com.bookflight.ticket.services.impl;
 
+import com.bookflight.ticket.converter.TicketConverter;
 import com.bookflight.ticket.dto.MailBody;
 import com.bookflight.ticket.dto.request.TicketRequest;
 import com.bookflight.ticket.dto.response.TicketBookedInfo;
+import com.bookflight.ticket.dto.response.TicketBookedInfoAdmin;
 import com.bookflight.ticket.models.*;
 import com.bookflight.ticket.repositories.*;
 import com.bookflight.ticket.services.EmailService;
@@ -18,36 +20,34 @@ import java.util.*;
 public class TicketServiceImpl implements TicketService {
     @Autowired
     private TicketRepository ticketRepository;
-
+    @Autowired
+    private SeatRepository seatRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
-    private AirportRepository airportRepository;
-
+    private TicketConverter ticketConverter;
     @Override
     public List<TicketBookedInfo> getBookedTicketInfo(Long id) throws Exception {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new Exception("User not found"));
         List<TicketBookedInfo> ticketBookedInfos = new ArrayList<>();
         List<TicketEntity> ticketEntityList = ticketRepository.findByUserEntity(user);
         for(TicketEntity ticketEntity : ticketEntityList){
-            TicketBookedInfo bookedInfo = new TicketBookedInfo();
-            bookedInfo.setTicketId(ticketEntity.getId());
-            bookedInfo.setPrice(ticketEntity.getPrice());
-            bookedInfo.setSeatNumber(ticketEntity.getSeat().getSeatNumber());
-            bookedInfo.setFlightCode(ticketEntity.getFlightEntity().getCode());
-            bookedInfo.setDepartureTime(ticketEntity.getFlightEntity().getDepartureTime());
-            bookedInfo.setArrivalTime(ticketEntity.getFlightEntity().getArrivalTime());
-            bookedInfo.setArrivalAirportName(airportRepository.findById(ticketEntity.getFlightEntity().getArrivalId()).get().getName());
-            bookedInfo.setDepartureAirportName(airportRepository.findById(ticketEntity.getFlightEntity().getDepartureId()).get().getName());
-            bookedInfo.setAirlineName(ticketEntity.getFlightEntity().getPlaneEntity().getAirlineEntity().getName());
-            if(ticketEntity.getLuggageEntity() == null){
-                bookedInfo.setLuggage(0);
-            }else {
-                bookedInfo.setLuggage(ticketEntity.getLuggageEntity().getWeight());
-            }
+            TicketBookedInfo bookedInfo = ticketConverter.toTicketBookedInfo(ticketEntity);
             ticketBookedInfos.add(bookedInfo);
         }
         return ticketBookedInfos;
+    }
+
+    @Override
+    public TicketBookedInfoAdmin getTicketBookedById(Long id) {
+        SeatEntity seatEntity = seatRepository.findById(id).get();
+        TicketEntity ticketEntity = seatEntity.getTicketEntity();
+        TicketBookedInfoAdmin ticketBookedInfoAdmin = new TicketBookedInfoAdmin();
+        ticketBookedInfoAdmin.setTicketPrice(ticketEntity.getPrice());
+        ticketBookedInfoAdmin.setClientEmail(ticketEntity.getEmail());
+        ticketBookedInfoAdmin.setClientPhone(ticketEntity.getPhone());
+        ticketBookedInfoAdmin.setClientName(ticketEntity.getName());
+        ticketBookedInfoAdmin.setLuggageType(ticketEntity.getLuggageEntity().getLuggageType());
+        return ticketBookedInfoAdmin;
     }
 }

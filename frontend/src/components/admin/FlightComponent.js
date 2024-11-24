@@ -1,14 +1,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Flex, Form, List, message, Modal, Space, Spin, Switch, Table, Tag, Tooltip } from 'antd';
-import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
 import Loading from '../../util/Loading';
 import { getAllFlights, getFlightById } from '../../api/FlightApi';
 import { EditOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { Link, useLocation } from 'react-router-dom';
-import IconContext from '@ant-design/icons/lib/components/Context';
-
+import {Drawer } from 'antd';
+import { getTicketById } from '../../api/TicketApi';
 
 export default function FlightComponent() {
   const columns = [
@@ -85,6 +84,9 @@ export default function FlightComponent() {
   const [flightInfo, setFlightInfo] = useState({});
   const [loading,setLoading] = useState(false)
   const [open, setOpen] = useState(false);
+  const [openUser, setOpenUser] = useState(false);
+  const [ticketId, setTicketId] = useState(null)
+  const [detailTicket, setDetailTicket] = useState(null)
   const fetchFlight = async () => {
       setLoading(true);
       try {
@@ -111,6 +113,20 @@ export default function FlightComponent() {
           setLoading(false);
       }
   };
+  const fetchTicket = async () => {
+    try {
+        const response = await  getTicketById(ticketId);
+        if(response.ok){
+          const result = await response.json();
+          setDetailTicket(result)
+        }
+    } catch (error) {
+        message.error('Failed to fetch airlines!');
+    }
+  };
+  useEffect(() => {
+    fetchTicket();
+  }, [ticketId]);
   useEffect(() => {
     fetchFlight();
   }, []);
@@ -157,13 +173,22 @@ export default function FlightComponent() {
     fetchFlight()
     setOpen(true);
   };
-  const handleOk = () => {
-    setOpen(false);
-  };
   const handleCancel = () => {
     setOpen(false);
   };
+  const showDrawer = (ticketId) => {
+    setOpenUser(true);
 
+  };
+
+  const handleSetIdTicket = (seatId) => {
+    console.log(seatId)
+    setTicketId(seatId); 
+    showDrawer()
+  };
+  const onClose = () => {
+    setOpenUser(false);
+  };
   const onSearch = (value, _e, info) => console.log(info?.source, value);
   return (
     <div>
@@ -252,7 +277,12 @@ export default function FlightComponent() {
                           className={`badge ${!item.available ? 'bg-success' : 'bg-danger'} rounded-pill`}
                         >
                           {!item.available ? "Đã đặt" : "Đang trống"}
+                         
                         </span>
+                        {!item.available ? (<Button type="primary" onClick={() => handleSetIdTicket(item.id)}>
+                            Open
+                          </Button>) : ""}
+                
                       </>}
                   />
                 </List.Item>
@@ -261,6 +291,17 @@ export default function FlightComponent() {
           </div>
         </div>
       </Modal>
+      <Drawer title="Thông tin người đặt vé" onClose={onClose} open={openUser}>
+        {detailTicket && (
+          <>
+            <p>Tên: {detailTicket.clientName}</p>
+            <p>Email: {detailTicket.clientEmail}</p>
+            <p>Phone: {detailTicket.clientPhone}</p>
+            <p>Luggage Type: {detailTicket.luggageType}</p>
+            <p>Ticket Price: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(detailTicket.ticketPrice)}</p>
+          </>
+        )}
+      </Drawer>
     </div>
   )
 }

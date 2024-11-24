@@ -7,6 +7,7 @@ import AirportComponent from './components/admin/AirportComponent';
 import AirlineComponent from './components/admin/AirlineComponent';
 import FlightDetail from './components/admin/detail/FlightDetail';
 import PlaneComponent from './components/admin/PlaneComponent';
+import DashboardComponent from './components/admin/DashboardComponent';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="airport" element={<AirportComponent />} />
             <Route path="airline" element={<AirlineComponent />} />
             <Route path="plane" element={<PlaneComponent />} />
+            <Route path="dashboard" element={<DashboardComponent />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -69,6 +69,7 @@ public class CustomFilterSecurity {
                             .requestMatchers(HttpMethod.GET,"/api/admin/airline").hasAuthority(RoleType.ADMIN.name())
                             //book
                             .requestMatchers("/api/ticket/by-user").hasAnyAuthority(RoleType.USER.name())
+                            .requestMatchers("/api/ticket/detail/**").hasAnyAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/payment/create_payment_vnpay").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             //flight
                             .requestMatchers("/api/flight/by-admin").hasAuthority(RoleType.ADMIN.name())
@@ -77,6 +78,9 @@ public class CustomFilterSecurity {
                             .requestMatchers(HttpMethod.POST,"/api/flight/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/user/**").hasAnyAuthority(RoleType.USER.name())
+                            //revenue
+                            .requestMatchers("/api/admin/revenue/today").hasAnyAuthority(RoleType.ADMIN.name())
+                            .requestMatchers("/api/admin/revenue/yearly/**").hasAnyAuthority(RoleType.ADMIN.name())
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(session  -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

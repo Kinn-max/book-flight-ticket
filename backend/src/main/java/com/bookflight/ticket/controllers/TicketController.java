@@ -4,6 +4,7 @@ import com.bookflight.ticket.configuration.JWTHelper;
 import com.bookflight.ticket.dto.FlightDto;
 import com.bookflight.ticket.dto.request.TicketRequest;
 import com.bookflight.ticket.dto.response.TicketBookedInfo;
+import com.bookflight.ticket.dto.response.TicketBookedInfoAdmin;
 import com.bookflight.ticket.models.UserEntity;
 import com.bookflight.ticket.services.TicketService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,15 @@ public class TicketController {
             }
             List<TicketBookedInfo> bookedInfoList = ticketService.getBookedTicketInfo(userId);
             return ResponseEntity.ok().body(bookedInfoList);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getTicketById( @PathVariable Long id) {
+        try {
+            TicketBookedInfoAdmin ticketInfo = ticketService.getTicketBookedById(id);
+            return ResponseEntity.ok(ticketInfo);
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
