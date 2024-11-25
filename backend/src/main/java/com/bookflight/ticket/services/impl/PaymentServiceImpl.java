@@ -170,6 +170,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .phone(ticketRequest.getPhone())
                 .email(ticketRequest.getEmail())
                 .name(ticketRequest.getName())
+                .createAt(LocalDate.now())
                 .build();
 
         LocalDate today = LocalDate.now();

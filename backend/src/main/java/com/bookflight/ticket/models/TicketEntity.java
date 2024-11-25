@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class TicketEntity {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "createAt")
+    private LocalDate createAt;
 
     //
     @ManyToOne
