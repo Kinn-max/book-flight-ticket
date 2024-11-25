@@ -63,6 +63,15 @@ public class FlightController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/status/{id}")
+    public ResponseEntity<?> setStatusFlight(@PathVariable Long id) {
+        try {
+            flightService.setStatusFlight(id);
+            return  ResponseEntity.ok("Set flight status successfully!");
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/by-admin")
     public ResponseEntity<?> getAllFlightsAdmin() {
         try {
@@ -78,6 +87,15 @@ public class FlightController {
             List<FlightResponse> flightResponses = flightService.getAllFlightsByUser();
             return ResponseEntity.ok(flightResponses);
         } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchFlightByCode (@RequestParam String code) {
+        try {
+            List<FlightResponse> flightResponses = flightService.getAllFlightByCode(code);
+            return ResponseEntity.ok(flightResponses);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

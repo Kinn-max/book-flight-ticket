@@ -1,4 +1,5 @@
 package com.bookflight.ticket.controllers;
+import com.bookflight.ticket.dto.DashboardSummary;
 import com.bookflight.ticket.dto.response.RevenueResponse;
 import com.bookflight.ticket.dto.response.YearlyRevenueResponse;
 import com.bookflight.ticket.services.RevenueService;
@@ -35,6 +36,15 @@ public class RevenueController {
             return ResponseEntity.ok(revenue);
         } catch (Exception e) {
            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getDashboardSummary() {
+        try {
+            DashboardSummary dashboard = revenueService.getDashboardSummary();
+            return ResponseEntity.ok(dashboard);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

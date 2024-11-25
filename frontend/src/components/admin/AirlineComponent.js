@@ -145,7 +145,7 @@ export default function AirlineComponent() {
             title: 'Logo',
             dataIndex: 'logo',
             key: 'logo',
-            render: (logo) => <img src={logo} alt="Airline Logo" style={{ width: 50, height: 50 }} />,
+            render: (logo) => <img src={logo} alt="Airline Logo" style={{ width: 100, height: 100 }} />,
         },
         {
             title: 'Option',

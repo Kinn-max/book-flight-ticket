@@ -1,10 +1,11 @@
 package com.bookflight.ticket.services.impl;
 
+import com.bookflight.ticket.dto.DashboardSummary;
 import com.bookflight.ticket.dto.response.MonthlyRevenueResponse;
 import com.bookflight.ticket.dto.response.RevenueResponse;
 import com.bookflight.ticket.dto.response.YearlyRevenueResponse;
 import com.bookflight.ticket.models.RevenueEntity;
-import com.bookflight.ticket.repositories.RevenueRepository;
+import com.bookflight.ticket.repositories.*;
 import com.bookflight.ticket.services.RevenueService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,20 @@ import java.util.List;
 public class RevenueServiceImpl implements RevenueService {
     @Autowired
     private RevenueRepository revenueRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AirlineRepository airlineRepository;
+
+    @Autowired
+    private AirportRepository airportRepository;
+
+    @Autowired
+    private PlaneRepository planeRepository;
+
+    @Autowired
+    private FlightRepository flightRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Override
@@ -46,5 +61,21 @@ public class RevenueServiceImpl implements RevenueService {
                 .monthlyRevenues(monthlyRevenues)
                 .build();
         return response;
+    }
+
+    @Override
+    public DashboardSummary getDashboardSummary() {
+        long totalUsers = userRepository.count();
+        long totalAirlines = airlineRepository.count();
+        long totalAirports = airportRepository.count();
+        long totalPlanes = planeRepository.count();
+        long totalFlights = flightRepository.count();
+        DashboardSummary dashboardSummary = new DashboardSummary();
+        dashboardSummary.setTotalUsers(totalUsers);
+        dashboardSummary.setTotalAirlines(totalAirlines);
+        dashboardSummary.setTotalAirports(totalAirports);
+        dashboardSummary.setTotalPlanes(totalPlanes);
+        dashboardSummary.setTotalFlights(totalFlights);
+        return dashboardSummary;
     }
 }

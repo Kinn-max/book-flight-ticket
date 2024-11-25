@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Flex, Form, List, message, Modal, Space, Spin, Switch, Table, Tag, Tooltip } from 'antd';
 import Loading from '../../util/Loading';
-import { getAllFlights, getFlightById } from '../../api/FlightApi';
+import { getAllFlights, getFlightById, searchByCode, setStatusFlight } from '../../api/FlightApi';
 import { EditOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import Search from 'antd/es/input/Search';
 import { Link, useLocation } from 'react-router-dom';
@@ -47,15 +47,15 @@ export default function FlightComponent() {
       key: 'arrivalAirport',
     },
     {
-      title: 'Show/Hidden',
+      title: 'Hidden/Show',
       dataIndex: 'status',
       key: 'status',
       render: (_, record) => (
         <span>
-          <Form.Item label="Switch" valuePropName="checked">
+          <Form.Item  valuePropName="checked">
             <Switch 
               checked={record.status} 
-              onChange={(checked) => handleStatusChange(checked, record.key)} 
+              onChange={() => handleStatusChange(record.key)} 
             />
           </Form.Item>
         </span>
@@ -87,11 +87,12 @@ export default function FlightComponent() {
   const [openUser, setOpenUser] = useState(false);
   const [ticketId, setTicketId] = useState(null)
   const [detailTicket, setDetailTicket] = useState(null)
+  const [reload, setReload] = useState(false)
+  const [codeSearch, setCodeSearch] = useState("")
   const fetchFlight = async () => {
       setLoading(true);
       try {
           const response = await  getAllFlights();
-          console.log(response)
           if(response){
               const tableData = response.map((flight, index) => ({
                   key: flight.id,
@@ -105,7 +106,6 @@ export default function FlightComponent() {
                   status:flight.status
               }));
               setData(tableData);
-
           }
       } catch (error) {
           message.error('Failed to fetch airlines!');
@@ -113,6 +113,30 @@ export default function FlightComponent() {
           setLoading(false);
       }
   };
+  const fetchFlightByCode = async () => {
+    try {
+        const response = await  searchByCode(codeSearch);
+        console.log(response)
+        if(response){
+            const tableData = response.map((flight, index) => ({
+                key: flight.id,
+                stt: index + 1,
+                code: flight.codeFlight,
+                airline: flight.airline,
+                departureTime: new Date(flight.departureTime).toLocaleString(), 
+                arrivalTime: new Date(flight.arrivalTime).toLocaleString(),
+                departureAirport:flight.departureAirport,
+                arrivalAirport:flight.arrivalAirport,
+                status:flight.status
+            }));
+            setData(tableData);
+        }
+    } catch (error) {
+        message.error('Failed to fetch airlines!');
+    } finally {
+        setLoading(false);
+    }
+};
   const fetchTicket = async () => {
     try {
         const response = await  getTicketById(ticketId);
@@ -125,16 +149,32 @@ export default function FlightComponent() {
     }
   };
   useEffect(() => {
+    fetchFlightByCode();
+  }, [codeSearch]);
+  useEffect(() => {
     fetchTicket();
   }, [ticketId]);
   useEffect(() => {
     fetchFlight();
-  }, []);
+  }, [reload]);
    if(loading) return(
-         <Loading/>
+      <Loading/>
     )
-    const handleStatusChange = (checked, key) => {
-      console.log(key,checked)
+  const handleStatusChange = (id) => {
+    const fetchStatus = async () => {
+      try {
+          const response = await  setStatusFlight(id);
+          if(response.ok){
+            const result = await response.text();
+            console.log(result)
+            message.success(result)
+            setReload(prev => !prev)
+          }
+      } catch (error) {
+          message.error('Failed to fetch!');
+      }
+    };
+    fetchStatus()
   }
   const handleSearch = (record)=>{
     console.log(record)
@@ -189,7 +229,6 @@ export default function FlightComponent() {
   const onClose = () => {
     setOpenUser(false);
   };
-  const onSearch = (value, _e, info) => console.log(info?.source, value);
   return (
     <div>
        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -206,7 +245,7 @@ export default function FlightComponent() {
             allowClear
             enterButton="Search"
             size="large"
-            onSearch={onSearch}
+            onChange={(e)=>setCodeSearch(e.target.value)}
             style={{
               width: 500,
             }}
@@ -279,10 +318,7 @@ export default function FlightComponent() {
                           {!item.available ? "Đã đặt" : "Đang trống"}
                          
                         </span>
-                        {!item.available ? (<Button type="primary" onClick={() => handleSetIdTicket(item.id)}>
-                            Open
-                          </Button>) : ""}
-                
+                        {!item.available ?( <Button type="default" style={{margin: "0 5px"}} shape="circle" icon={<SearchOutlined />} onClick={() => handleSetIdTicket(item.id)}/>) : ""}
                       </>}
                   />
                 </List.Item>
@@ -297,6 +333,7 @@ export default function FlightComponent() {
             <p>Tên: {detailTicket.clientName}</p>
             <p>Email: {detailTicket.clientEmail}</p>
             <p>Phone: {detailTicket.clientPhone}</p>
+            <p>Ngày đặt: {detailTicket.createAt}</p>
             <p>Luggage Type: {detailTicket.luggageType}</p>
             <p>Ticket Price: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(detailTicket.ticketPrice)}</p>
           </>

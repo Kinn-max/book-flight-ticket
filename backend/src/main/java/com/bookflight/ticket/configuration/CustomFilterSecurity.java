@@ -73,7 +73,9 @@ public class CustomFilterSecurity {
                             .requestMatchers("/api/payment/create_payment_vnpay").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             //flight
                             .requestMatchers("/api/flight/by-admin").hasAuthority(RoleType.ADMIN.name())
+                            .requestMatchers("/api/flight/status/**").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/detail/**").permitAll()
+                            .requestMatchers(HttpMethod.GET,"/api/flight/search").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/search").permitAll()
                             .requestMatchers(HttpMethod.POST,"/api/flight/create").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/admin/**").hasAuthority(RoleType.ADMIN.name())
@@ -81,6 +83,7 @@ public class CustomFilterSecurity {
                             //revenue
                             .requestMatchers("/api/admin/revenue/today").hasAnyAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/admin/revenue/yearly/**").hasAnyAuthority(RoleType.ADMIN.name())
+                            .requestMatchers("/api/admin/revenue/dashboard").hasAnyAuthority(RoleType.ADMIN.name())
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(session  -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

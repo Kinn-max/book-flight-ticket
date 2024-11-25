@@ -160,4 +160,22 @@ public class FlightServiceImpl implements FlightService {
         return flightResponseList;
     }
 
+    @Override
+    public void setStatusFlight(Long id) throws Exception {
+        FlightEntity flightEntity = flightRepository.findById(id).orElseThrow(() -> new Exception("Flight not found !"));
+        flightEntity.setStatus(!flightEntity.getStatus());
+        flightRepository.save(flightEntity);
+    }
+
+    @Override
+    public List<FlightResponse> getAllFlightByCode(String code) {
+        List<FlightResponse> flightResponseList = new ArrayList<>();
+        List<FlightEntity> flightEntityList = flightRepository.findByCodeContainingIgnoreCase(code);
+        flightEntityList.forEach((flightEntity) -> {
+            FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity,false);
+            flightResponseList.add(flightResponse);
+        });
+        return flightResponseList;
+    }
+
 }

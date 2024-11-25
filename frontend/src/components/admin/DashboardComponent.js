@@ -1,16 +1,17 @@
-import { DatePicker, message, Space } from "antd";
+import { Card, DatePicker, message, Space } from "antd";
 import { Column } from "@ant-design/charts";
 import Title from "antd/es/typography/Title";
 import React, { useState, useEffect } from "react";
 import Loading from "../../util/Loading";
-import { getAllRevenueByDate, getAllRevenueByMonth } from "../../api/RevenueApi";
-
+import { getAllRevenueByDate, getAllRevenueByMonth, getDashboardSummary } from "../../api/RevenueApi";
+import { Col, Row, Statistic } from 'antd';
+import CountUp from 'react-countup';
 export default function DashboardComponent() {
   const [dailyData, setDailyData] = useState([]);
   const [yearlyData, setYearlyData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [yearPick, setYearPick] = useState(2024);
-
+  const [summary, setSummary] = useState(null);
   const fetchRevenueByDate = async () => {
     setLoading(true);
     try {
@@ -46,9 +47,21 @@ export default function DashboardComponent() {
       setLoading(false);
     }
   };
-  
-
+  const fetchDashboardSummary = async () => {
+    setLoading(true);
+    try {
+      const response = await getDashboardSummary();
+      if (response) {
+        setSummary(response);
+      }
+    } catch (error) {
+      message.error("Failed to fetch monthly revenue data!");
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
+    fetchDashboardSummary()
     fetchRevenueByDate();
     fetchRevenueByMonth(yearPick); 
   }, [yearPick]);
@@ -92,19 +105,72 @@ export default function DashboardComponent() {
     },
     height: 300,
   };
-
+  const formatter = (value) => <CountUp end={value} separator="," />;
   return (
     <div style={{ padding: 20 }}>
-      <Title level={3}>Doanh thu theo ngày</Title>
-      <Space direction="vertical" size={20} style={{ width: "100%" }}>
-        <div>
-          <div style={{ marginTop: 20 }}>
-            <Column {...dailyConfig} />
+      <div>
+      <Row gutter={16}>
+          <Col span={4}>
+           <Card title="Tổng người dùng" bordered={false}>
+              <Statistic
+                value={summary ? summary.totalUsers : 0}
+                formatter={formatter}
+              />
+            </Card>
+          </Col>
+          <Col span={4}>
+          <Card title="Tổng hãng máy bay" bordered={false}>
+            <Statistic
+              value={summary ? summary.totalAirlines : 0}
+              formatter={formatter}
+            />
+            </Card>
+          </Col>
+
+          <Col span={4}>
+           <Card title="Tổng sân bay" bordered={false}>
+            <Statistic
+              value={summary ? summary.totalAirports : 0}
+              formatter={formatter}
+            />
+            </Card>
+          </Col>
+          <Col span={4}>
+            <Card title="Tổng máy bay" bordered={false}>
+              <Statistic
+                value={summary ? summary.totalPlanes : 0}
+                formatter={formatter}
+              />
+              </Card>
+          </Col>
+          <Col span={4}>
+            <Card title="Tổng chuyến bay" bordered={false}>
+              <Statistic
+                value={summary ? summary.totalFlights : 0}
+                formatter={formatter}
+              />
+            </Card>
+          </Col>
+        </Row>
+      </div>
+      <Title  style={{  marginTop: 20,marginBottom: 20 }}level={2}>Doanh thu</Title>
+      <div style={{ display: "flex", gap: 20, alignItems: "flex-end" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <Title level={4} style={{ textAlign: "center" }}>Doanh thu theo ngày</Title>
+          <Column
+            {...dailyConfig}
+            data={dailyData.map(item => ({
+              ...item,
+              value: item.value / 1000000, 
+            }))}
+          />
+          <div style={{ textAlign: "center", marginTop: 10 }}>
+            <em>Đơn vị tính: Triệu</em>
           </div>
         </div>
-
-        <div>
-        <Title level={3}>Doanh thu theo tháng ({yearPick})</Title>
+  
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <Title level={4} style={{ textAlign: "center" }}>Doanh thu theo tháng ({yearPick})</Title>
           <DatePicker
             picker="year"
             onChange={(date) => {
@@ -113,12 +179,21 @@ export default function DashboardComponent() {
               }
             }}
             format="YYYY"
+            style={{ marginBottom: 20, alignSelf: "center" }}
           />
-          <div style={{ marginTop: 20 }}>
-            <Column {...monthlyConfig} />
+          <Column
+            {...monthlyConfig}
+            data={yearlyData.map(item => ({
+              ...item,
+              value: item.value / 1000000, 
+            }))}
+          />
+          <div style={{ textAlign: "center", marginTop: 10 }}>
+            <em>Đơn vị tính: Triệu</em>
           </div>
         </div>
-      </Space>
+      </div>
     </div>
   );
+  
 }

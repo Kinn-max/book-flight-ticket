@@ -48,6 +48,7 @@ public class TicketServiceImpl implements TicketService {
         ticketBookedInfoAdmin.setClientPhone(ticketEntity.getPhone());
         ticketBookedInfoAdmin.setClientName(ticketEntity.getName());
         ticketBookedInfoAdmin.setLuggageType(ticketEntity.getLuggageEntity().getLuggageType());
+        ticketBookedInfoAdmin.setCreateAt(ticketEntity.getCreateAt());
         return ticketBookedInfoAdmin;
     }
 }

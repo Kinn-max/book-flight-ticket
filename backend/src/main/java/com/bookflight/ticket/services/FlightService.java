@@ -12,4 +12,6 @@ public interface FlightService {
     List<FlightResponse> searchFlights(FlightRequest flightRequest) throws Exception;
     List<FlightResponse> getAllFlightsByUser() throws Exception;
     List<FlightResponse> getAllFlightsByAdmin() throws Exception;
+    void setStatusFlight(Long id) throws Exception;
+    List<FlightResponse> getAllFlightByCode(String code) ;
 }
