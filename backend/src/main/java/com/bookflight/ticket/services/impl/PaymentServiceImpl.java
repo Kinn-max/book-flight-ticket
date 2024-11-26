@@ -1,8 +1,12 @@
 package com.bookflight.ticket.services.impl;
 
 import com.bookflight.ticket.configuration.ConfigVNPay;
+import com.bookflight.ticket.converter.SeatConverter;
 import com.bookflight.ticket.dto.MailBody;
 import com.bookflight.ticket.dto.request.TicketRequest;
+import com.bookflight.ticket.dto.response.InfoBookingResponse;
+import com.bookflight.ticket.dto.response.LuggageResponse;
+import com.bookflight.ticket.dto.response.SeatResponse;
 import com.bookflight.ticket.dto.response.TicketBookedInfo;
 import com.bookflight.ticket.models.*;
 import com.bookflight.ticket.repositories.*;
@@ -51,8 +55,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private LuggageRepository luggageRepository;
+
     @Autowired
     private RevenueRepository revenueRepository;
+
+    @Autowired
+    private SeatConverter seatConverter;
 
     @Override
     public String createPayment(TicketRequest ticketRequest) throws Exception{
@@ -92,7 +100,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
         vnp_Params.put("vnp_OrderType", orderType);
 
-        String returnUrl = ConfigVNPay.vnp_ReturnUrl;
+        String returnUrl = ConfigVNPay.vnp_ReturnUrl2;
         returnUrl += "?flightId=" + ticketRequest.getFlightId() + "&seatId=" + ticketRequest.getSeatId();
 
         if(ticketRequest.getLuggageId() != null && ticketRequest.getLuggageId() != 0){
@@ -205,6 +213,37 @@ public class PaymentServiceImpl implements PaymentService {
             bookedInfo.setAirlineName(result.getFlightEntity().getPlaneEntity().getAirlineEntity().getName());
             sendEmail(bookedInfo, ticketRequest);
         }
+    }
+
+    @Override
+    public InfoBookingResponse getInfoBooking(String flightId, String seatClass) {
+        List<SeatEntity> seatEntities = seatRepository.findByFlightId(Long.parseLong(flightId), seatClass);
+        List<LuggageEntity> luggageEntities = luggageRepository.findAll();
+
+        List<SeatResponse> seatResponses = new ArrayList<>();
+        for (SeatEntity seatEntity : seatEntities) {
+            SeatResponse seatResponse = new SeatResponse();
+            seatResponse.setId(seatEntity.getId());
+            seatResponse.setSeatNumber(seatEntity.getSeatNumber());
+            seatResponse.setSeatClass(seatEntity.getSeatClass());
+            seatResponse.setPrice(seatClass.equals("Business Class") ? seatEntity.getFlightEntity().getBusPrice() : seatEntity.getFlightEntity().getEcoPrice());
+            seatResponse.setAvailable(seatEntity.isAvailable());
+            seatResponses.add(seatResponse);
+        }
+
+        List<LuggageResponse> luggageResponses = new ArrayList<>();
+        for (LuggageEntity luggageEntity : luggageEntities) {
+            LuggageResponse luggageResponse = new LuggageResponse();
+            luggageResponse.setId(luggageEntity.getId());
+            luggageResponse.setLuggageType(luggageEntity.getLuggageType());
+            luggageResponse.setWeight(luggageEntity.getWeight());
+            luggageResponse.setPrice(luggageEntity.getPrice());
+            luggageResponses.add(luggageResponse);
+        }
+        InfoBookingResponse infoBookingResponse = new InfoBookingResponse();
+        infoBookingResponse.setSeatList(seatResponses);
+        infoBookingResponse.setLuggageList(luggageResponses);
+        return infoBookingResponse;
     }
 
     public void sendEmail(TicketBookedInfo ticketBookedInfo, TicketRequest ticket) throws MessagingException {

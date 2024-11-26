@@ -7,6 +7,8 @@ import com.bookflight.ticket.services.LuggageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LuggageServiceImpl implements LuggageService {
     @Autowired
@@ -20,5 +22,10 @@ public class LuggageServiceImpl implements LuggageService {
                 .price(luggageRequest.getPrice())
                 .build();
         luggageRepository.save(luggageEntity);
+    }
+
+    @Override
+    public List<LuggageEntity> getAllLuggages() {
+        return luggageRepository.findAll();
     }
 }
