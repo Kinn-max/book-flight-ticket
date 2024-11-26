@@ -24,5 +24,60 @@ code {
   z-index: 9999; 
 }
 .loading-spin {
-  margin: 0 10px; /* Khoảng cách giữa các icon Spin */
+  margin: 0 10px; 
+}
+.contentStyle {
+  height: 160px;
+  color: #fff;
+  line-height: 160px;
+  text-align: center;
+  background: #364d79;
+}
+.time-selector-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.time-selector-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
+  height: 100px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.time-selector-button:hover {
+  border-color: #1890ff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.time-selector-selected {
+  border-color: #1890ff;
+  background: #e6f7ff;
+}
+
+.process-flight{
+  width:100%;
+  height: 2px;
+  background-color: red;
+}
+.background_title-search{
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  background-image: url("https://ik.imagekit.io/tvlk/image/imageResource/2023/12/12/1702371005630-66a1e7a5ee9c4307b9e11409522d377b.png?tr=q-75");
+  border-radius: 10px;
+  overflow: hidden;
+}
+.border-radius--custom{
+  border-radius: 10px;
+  overflow: hidden;
 }

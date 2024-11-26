@@ -39,7 +39,7 @@ export default function NavbarWeb() {
                         console.log(userData.role)
                         if (userData.role === 'ADMIN'|| userData.role === "STAFF") {
                             setTimeout(() => {
-                                window.location.href = '/admin/home'; 
+                                window.location.href = '/admin/dashboard'; 
                             }, 2000); 
                         }else{
                             setTimeout(() => {

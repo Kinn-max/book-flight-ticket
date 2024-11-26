@@ -8,6 +8,8 @@ import AirlineComponent from './components/admin/AirlineComponent';
 import FlightDetail from './components/admin/detail/FlightDetail';
 import PlaneComponent from './components/admin/PlaneComponent';
 import DashboardComponent from './components/admin/DashboardComponent';
+import CommonHome from './layout/web/home/CommonHome';
+import CommonSearch from './layout/web/search/CommonSearch';
 
 function App() {
   return (
@@ -15,9 +17,10 @@ function App() {
       <BrowserRouter>
         <Routes>
          
-          <Route path="/*" element={<CommonWeb />} />
-
-        
+          <Route path="/*" element={<CommonWeb />} >
+             <Route path="" element={<CommonHome />} />
+             <Route path="search" element={<CommonSearch />} />
+          </Route>
           <Route path="/admin/*" element={<CommonAdmin />}>
             <Route path="flight" element={<FlightComponent />} />
             <Route path="flight/create" element={<FlightDetail />} />

@@ -30,28 +30,28 @@ export default function CommonWeb() {
   return (
     <Layout>
       <NavbarWeb/>
-      <Content
-        style={{
-          padding: '0 48px',
-        }}
-      >
-        <Layout
+        <Content
           style={{
-            padding: '24px 0',
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
+            padding: '0 48px',
           }}
         >
-          <Content
+          <Layout
             style={{
-              padding: '0 24px',
-              minHeight: 280,
+              padding: '24px 0',
+              // background: colorBgContainer,
+              borderRadius: borderRadiusLG,
             }}
           >
-            <Outlet /> 
-          </Content>
-        </Layout>
-      </Content>
+            <Content
+              style={{
+                padding: '0 24px',
+                minHeight: 280,
+              }}
+            >
+              <Outlet /> 
+            </Content>
+          </Layout>
+        </Content>
       <FooterWeb/>
     </Layout>
   );
