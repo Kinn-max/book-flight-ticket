@@ -59,9 +59,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private RevenueRepository revenueRepository;
 
-    @Autowired
-    private SeatConverter seatConverter;
-
     @Override
     public String createPayment(TicketRequest ticketRequest) throws Exception{
         FlightEntity flight = flightRepository.findById(ticketRequest.getFlightId()).orElseThrow( ()-> new Exception("Flight not found") );
@@ -213,37 +210,6 @@ public class PaymentServiceImpl implements PaymentService {
             bookedInfo.setAirlineName(result.getFlightEntity().getPlaneEntity().getAirlineEntity().getName());
             sendEmail(bookedInfo, ticketRequest);
         }
-    }
-
-    @Override
-    public InfoBookingResponse getInfoBooking(String flightId, String seatClass) {
-        List<SeatEntity> seatEntities = seatRepository.findByFlightId(Long.parseLong(flightId), seatClass);
-        List<LuggageEntity> luggageEntities = luggageRepository.findAll();
-
-        List<SeatResponse> seatResponses = new ArrayList<>();
-        for (SeatEntity seatEntity : seatEntities) {
-            SeatResponse seatResponse = new SeatResponse();
-            seatResponse.setId(seatEntity.getId());
-            seatResponse.setSeatNumber(seatEntity.getSeatNumber());
-            seatResponse.setSeatClass(seatEntity.getSeatClass());
-            seatResponse.setPrice(seatClass.equals("Business Class") ? seatEntity.getFlightEntity().getBusPrice() : seatEntity.getFlightEntity().getEcoPrice());
-            seatResponse.setAvailable(seatEntity.isAvailable());
-            seatResponses.add(seatResponse);
-        }
-
-        List<LuggageResponse> luggageResponses = new ArrayList<>();
-        for (LuggageEntity luggageEntity : luggageEntities) {
-            LuggageResponse luggageResponse = new LuggageResponse();
-            luggageResponse.setId(luggageEntity.getId());
-            luggageResponse.setLuggageType(luggageEntity.getLuggageType());
-            luggageResponse.setWeight(luggageEntity.getWeight());
-            luggageResponse.setPrice(luggageEntity.getPrice());
-            luggageResponses.add(luggageResponse);
-        }
-        InfoBookingResponse infoBookingResponse = new InfoBookingResponse();
-        infoBookingResponse.setSeatList(seatResponses);
-        infoBookingResponse.setLuggageList(luggageResponses);
-        return infoBookingResponse;
     }
 
     public void sendEmail(TicketBookedInfo ticketBookedInfo, TicketRequest ticket) throws MessagingException {

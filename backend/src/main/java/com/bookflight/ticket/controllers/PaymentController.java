@@ -15,16 +15,6 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @GetMapping("/get-info/{flight_id}/{seat_class}")
-    public ResponseEntity<?> getInfoBooking(@PathVariable String flight_id, @PathVariable String seat_class){
-        try {
-            return ResponseEntity.ok(paymentService.getInfoBooking(flight_id, seat_class));
-        }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @PostMapping("/create_payment_vnpay")
     public ResponseEntity<String> createPaymentVnPay(@RequestBody @Valid TicketRequest ticketRequest) throws UnsupportedEncodingException {
         try {

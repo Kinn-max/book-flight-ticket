@@ -71,8 +71,8 @@ public class CustomFilterSecurity {
                             .requestMatchers("/api/ticket/by-user").hasAnyAuthority(RoleType.USER.name())
                             .requestMatchers("/api/ticket/detail/**").hasAnyAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/payment/create_payment_vnpay").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
-                            .requestMatchers("/api/payment/get-info/**").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             //flight
+                            .requestMatchers("/api/flight/get-info-flight/**").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/by-admin").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/status/**").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/detail/**").permitAll()

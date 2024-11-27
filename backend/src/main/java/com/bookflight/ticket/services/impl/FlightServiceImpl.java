@@ -4,16 +4,10 @@ import com.bookflight.ticket.converter.FlightConverter;
 import com.bookflight.ticket.dto.AirportDto;
 import com.bookflight.ticket.dto.FlightDto;
 import com.bookflight.ticket.dto.request.FlightRequest;
-import com.bookflight.ticket.dto.response.AirportResponse;
-import com.bookflight.ticket.dto.response.FlightResponse;
-import com.bookflight.ticket.models.AirportEntity;
-import com.bookflight.ticket.models.FlightEntity;
-import com.bookflight.ticket.models.PlaneEntity;
-import com.bookflight.ticket.models.SeatEntity;
-import com.bookflight.ticket.repositories.AirportRepository;
-import com.bookflight.ticket.repositories.FlightRepository;
-import com.bookflight.ticket.repositories.PlaneRepository;
-import com.bookflight.ticket.repositories.SeatRepository;
+import com.bookflight.ticket.dto.response.*;
+import com.bookflight.ticket.models.*;
+import com.bookflight.ticket.repositories.*;
+import com.bookflight.ticket.services.AirportService;
 import com.bookflight.ticket.services.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +30,8 @@ public class FlightServiceImpl implements FlightService {
     private AirportRepository airportRepository;
     @Autowired
     private SeatRepository seatRepository;
+    @Autowired
+    private LuggageRepository luggageRepository;
     @Override
     public void createFlight(FlightDto flightDto) throws Exception {
         PlaneEntity planeEntity = planeRepository.findById(flightDto.getPlaneId())
@@ -176,6 +172,37 @@ public class FlightServiceImpl implements FlightService {
             flightResponseList.add(flightResponse);
         });
         return flightResponseList;
+    }
+
+    @Override
+    public InfoBookingResponse getInfoFlight(String flightId, String seatClass) {
+        List<SeatEntity> seatEntities = seatRepository.findByFlightId(Long.parseLong(flightId), seatClass);
+        List<LuggageEntity> luggageEntities = luggageRepository.findAll();
+
+        List<SeatResponse> seatResponses = new ArrayList<>();
+        for (SeatEntity seatEntity : seatEntities) {
+            SeatResponse seatResponse = new SeatResponse();
+            seatResponse.setId(seatEntity.getId());
+            seatResponse.setSeatNumber(seatEntity.getSeatNumber());
+            seatResponse.setSeatClass(seatEntity.getSeatClass());
+            seatResponse.setPrice(seatClass.equals("Business Class") ? seatEntity.getFlightEntity().getBusPrice() : seatEntity.getFlightEntity().getEcoPrice());
+            seatResponse.setAvailable(seatEntity.isAvailable());
+            seatResponses.add(seatResponse);
+        }
+
+        List<LuggageResponse> luggageResponses = new ArrayList<>();
+        for (LuggageEntity luggageEntity : luggageEntities) {
+            LuggageResponse luggageResponse = new LuggageResponse();
+            luggageResponse.setId(luggageEntity.getId());
+            luggageResponse.setLuggageType(luggageEntity.getLuggageType());
+            luggageResponse.setWeight(luggageEntity.getWeight());
+            luggageResponse.setPrice(luggageEntity.getPrice());
+            luggageResponses.add(luggageResponse);
+        }
+        InfoBookingResponse infoBookingResponse = new InfoBookingResponse();
+        infoBookingResponse.setSeatList(seatResponses);
+        infoBookingResponse.setLuggageList(luggageResponses);
+        return infoBookingResponse;
     }
 
 }

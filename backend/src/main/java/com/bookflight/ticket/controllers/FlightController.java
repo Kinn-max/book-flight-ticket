@@ -99,4 +99,14 @@ public class FlightController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/get-info-flight/{flight_id}/{seat_class}")
+    public ResponseEntity<?> getInfoFlight(@PathVariable String flight_id, @PathVariable String seat_class){
+        try {
+            return ResponseEntity.ok(flightService.getInfoFlight(flight_id, seat_class));
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
