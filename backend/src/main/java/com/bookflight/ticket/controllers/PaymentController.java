@@ -47,7 +47,12 @@ public class PaymentController {
             @RequestParam(required = false) String userId
     ) throws Exception {
         try{
-            TicketRequest ticketRequest = new TicketRequest((long) seatId, (long) flightId, (long) luggageId, name, phone, email);
+            TicketRequest ticketRequest;
+            if(luggageId != null){
+                ticketRequest = new TicketRequest((long) seatId, (long) flightId, (long) luggageId, name, phone, email);
+            } else {
+                ticketRequest = new TicketRequest((long) seatId, (long) flightId, null, name, phone, email);
+            }
             long id = Long.parseLong(userId);
             paymentService.bookTicket(ticketRequest, id, vnp_Amount);
             return ResponseEntity.ok().body("Booking flight successful");
