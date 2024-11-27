@@ -3,8 +3,6 @@ import {
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
 } from "@ant-design/icons"
 import { Menu, Layout } from "antd"
 import { useNavigate } from "react-router-dom"
@@ -33,10 +31,9 @@ const SidebarComponent = ({ collapsed, onCollapse }) => {
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-      <div>
-        <img src={logo} alt="Logo" />
-      </div>
-      <div className="demo-logo-vertical" />
+     <div class="demo-logo">
+        <img src={logo} style={{width: "50px"}}/>
+     </div>
       <Menu
         theme="dark"
         defaultSelectedKeys={["/admin/flight"]}
