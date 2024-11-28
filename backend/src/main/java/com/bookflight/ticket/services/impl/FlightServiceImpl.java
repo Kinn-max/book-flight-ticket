@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Service
 public class FlightServiceImpl implements FlightService {
@@ -48,6 +49,7 @@ public class FlightServiceImpl implements FlightService {
         }
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             Date departureTime = formatter.parse(flightDto.getDepartureTime());
             Date arrivalTime = formatter.parse(flightDto.getArrivalTime());
