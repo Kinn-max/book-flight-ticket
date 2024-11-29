@@ -47,7 +47,11 @@ public class TicketServiceImpl implements TicketService {
         ticketBookedInfoAdmin.setClientEmail(ticketEntity.getEmail());
         ticketBookedInfoAdmin.setClientPhone(ticketEntity.getPhone());
         ticketBookedInfoAdmin.setClientName(ticketEntity.getName());
-        ticketBookedInfoAdmin.setLuggageType(ticketEntity.getLuggageEntity().getLuggageType());
+        if(ticketEntity.getLuggageEntity() != null){
+            ticketBookedInfoAdmin.setLuggageType(ticketEntity.getLuggageEntity().getLuggageType());
+        } else {
+            ticketBookedInfoAdmin.setLuggageType("Không có");
+        }
         ticketBookedInfoAdmin.setCreateAt(ticketEntity.getCreateAt());
         return ticketBookedInfoAdmin;
     }
