@@ -26,7 +26,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/*" element={<CommonWeb />}>
-            <Route path="" element={<CommonSearch />} />
+            <Route path="" element={<CommonHome />} />
             <Route path="search" element={<CommonSearch />} />
           </Route>
           <Route

@@ -33,7 +33,6 @@ public class HomeServiceImpl implements HomeService {
             AirportResponse airportResponse = modelMapper.map(airportEntity, AirportResponse.class);
             airportResponses.add(airportResponse);
         }
-
         HomeResponse homeResponse = new HomeResponse();
         homeResponse.setAirportResponses(airportResponses);
         homeResponse.setSeatClasses(seatRepository.getAllSeatClass());

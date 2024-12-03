@@ -66,7 +66,10 @@ export default function NavbarWeb() {
         }}
       >
         <div className="demo-logo">
-          <img src={logo} style={{ width: 50 }} />
+          <img
+            src="https://d1785e74lyxkqq.cloudfront.net/_next/static/v2/9/97f3e7a54e9c6987283b78e016664776.svg"
+            style={{ width: 150 }}
+          />
         </div>
         <Menu
           theme="dark"
