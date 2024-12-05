@@ -6,7 +6,6 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons"
 import { login } from "../../api/UserApi"
 import Loading from "../../util/Loading"
 import { jwtDecode } from "jwt-decode"
-import logo from "../../assets/image/logo_flight.png"
 
 const items1 = ["Chuyến bay", "Săn vé rẻ", "Blog du lịch"].map(
   (key, index) => ({

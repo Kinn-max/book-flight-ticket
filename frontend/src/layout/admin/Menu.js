@@ -6,7 +6,6 @@ import {
 } from "@ant-design/icons"
 import { Menu, Layout } from "antd"
 import { useNavigate } from "react-router-dom"
-import logo from "../../assets/image/logo_flight.png"
 
 const { Sider } = Layout
 
@@ -31,9 +30,12 @@ const SidebarComponent = ({ collapsed, onCollapse }) => {
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-     <div class="demo-logo">
-        <img src={logo} style={{width: "50px"}}/>
-     </div>
+      <div class="demo-logo">
+        <img
+          src="https://d1785e74lyxkqq.cloudfront.net/_next/static/v2/9/97f3e7a54e9c6987283b78e016664776.svg"
+          style={{ width: "50px" }}
+        />
+      </div>
       <Menu
         theme="dark"
         defaultSelectedKeys={["/admin/flight"]}
