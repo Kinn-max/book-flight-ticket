@@ -40,6 +40,20 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDetailTicketById( @PathVariable Long id,HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization").substring(7);
+            Long userId = jwtHelper.extractUserId(token);
+            if(userId == null){
+                return ResponseEntity.badRequest().body("You need to log in first!");
+            }
+            TicketBookedInfo bookedInfo = ticketService.getDetailTicketById(id);
+            return ResponseEntity.ok().body(bookedInfo);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getTicketById( @PathVariable Long id) {
         try {

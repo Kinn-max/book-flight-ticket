@@ -3,6 +3,7 @@ package com.bookflight.ticket.services.impl;
 import com.bookflight.ticket.configuration.ConfigVNPay;
 import com.bookflight.ticket.converter.SeatConverter;
 import com.bookflight.ticket.dto.MailBody;
+import com.bookflight.ticket.dto.request.TicketBookingRequest;
 import com.bookflight.ticket.dto.request.TicketRequest;
 import com.bookflight.ticket.dto.response.InfoBookingResponse;
 import com.bookflight.ticket.dto.response.LuggageResponse;
@@ -63,7 +64,13 @@ public class PaymentServiceImpl implements PaymentService {
     public String createPayment(TicketRequest ticketRequest) throws Exception{
         FlightEntity flight = flightRepository.findById(ticketRequest.getFlightId()).orElseThrow( ()-> new Exception("Flight not found") );
 
-        SeatEntity seat = seatRepository.findById(ticketRequest.getSeatId()).orElseThrow(() -> new Exception("Seat not found or unavailable"));
+        List<SeatEntity> seatEntityList = seatRepository.findByFlightId(flight.getId(),ticketRequest.getSeatCLass());
+        SeatEntity seat = null;
+        if (!seatEntityList.isEmpty()) {
+             seat = seatEntityList.get(0);
+        } else {
+            throw new IllegalStateException("No available seats found for the given criteria.");
+        }
 
         double price = 0;
         if(seat.isAvailable()){
@@ -98,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_OrderType", orderType);
 
         String returnUrl = ConfigVNPay.vnp_ReturnUrl2;
-        returnUrl += "?flightId=" + ticketRequest.getFlightId() + "&seatId=" + ticketRequest.getSeatId();
+        returnUrl += "?flightId=" + ticketRequest.getFlightId() + "&seatId=" + seat.getId();
 
         if(ticketRequest.getLuggageId() != null && ticketRequest.getLuggageId() != 0){
             returnUrl += "&luggageId=" + ticketRequest.getLuggageId();
@@ -155,7 +162,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void bookTicket(TicketRequest ticketRequest, Long id, Float vnp_Amount) throws Exception {
+    public void bookTicket(TicketBookingRequest ticketRequest, Long id, Float vnp_Amount) throws Exception {
         UserEntity user = userRepository.findById(id).get();
         FlightEntity flight = flightRepository.findById(ticketRequest.getFlightId()).orElseThrow( ()-> new Exception("Flight not found") );
 
@@ -212,7 +219,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-    public void sendEmail(TicketBookedInfo ticketBookedInfo, TicketRequest ticket) throws MessagingException {
+    public void sendEmail(TicketBookedInfo ticketBookedInfo, TicketBookingRequest ticket) throws MessagingException {
         Map<String, Object> placeholders = new HashMap<>();
         placeholders.put("name", ticket.getName());
         placeholders.put("ticketId", ticketBookedInfo.getTicketId());

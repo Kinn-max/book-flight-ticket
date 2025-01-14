@@ -1,5 +1,6 @@
 package com.bookflight.ticket.controllers;
 
+import com.bookflight.ticket.dto.request.TicketBookingRequest;
 import com.bookflight.ticket.dto.request.TicketRequest;
 import com.bookflight.ticket.services.PaymentService;
 import jakarta.validation.Valid;
@@ -30,18 +31,18 @@ public class PaymentController {
             @RequestParam(required = false) Integer flightId,
             @RequestParam(required = false) Integer seatId,
             @RequestParam(required = false) Float vnp_Amount,
-            @RequestParam(required = false) Integer luggageId,
+            @RequestParam(required = false) Long luggageId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String userId
     ) throws Exception {
         try{
-            TicketRequest ticketRequest;
+            TicketBookingRequest ticketRequest;
             if(luggageId != null){
-                ticketRequest = new TicketRequest((long) seatId, (long) flightId, (long) luggageId, name, phone, email);
+                ticketRequest = new TicketBookingRequest((long) seatId, (long) flightId, (long) luggageId, name, phone, email);
             } else {
-                ticketRequest = new TicketRequest((long) seatId, (long) flightId, null, name, phone, email);
+                ticketRequest = new TicketBookingRequest((long) seatId, (long) flightId, null, name, phone, email);
             }
             long id = Long.parseLong(userId);
             paymentService.bookTicket(ticketRequest, id, vnp_Amount);

@@ -68,13 +68,15 @@ public class CustomFilterSecurity {
                             .requestMatchers(HttpMethod.DELETE,"/api/admin/plane/**").hasAuthority(RoleType.ADMIN.name())
                             //airline
                             .requestMatchers(HttpMethod.GET,"/api/admin/airline").hasAuthority(RoleType.ADMIN.name())
-                            //book
+                            //booking
                             .requestMatchers("/api/ticket/by-user").hasAnyAuthority(RoleType.USER.name())
+                            .requestMatchers("/api/ticket/**").hasAnyAuthority(RoleType.USER.name())
                             .requestMatchers("/api/ticket/detail/**").hasAnyAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/payment/create_payment_vnpay").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             //flight
                             .requestMatchers("/api/flight/get-info-flight/**").hasAnyAuthority(RoleType.USER.name(), RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/by-admin").hasAuthority(RoleType.ADMIN.name())
+                            .requestMatchers("/api/flight/by-user").permitAll()
                             .requestMatchers("/api/flight/status/**").hasAuthority(RoleType.ADMIN.name())
                             .requestMatchers("/api/flight/detail/**").permitAll()
                             .requestMatchers(HttpMethod.GET,"/api/flight/search").hasAuthority(RoleType.ADMIN.name())

@@ -20,9 +20,13 @@ public class FlightResponse {
     private String airline;
     private String logoAirline;
     private PlaneResponse plane;
+    private int availableEco;
+    private int availableBus;
     private double ecoPrice;
     private double busPrice;
     private Boolean status;
     private Long ticketId;
     List<SeatResponse> seats;
+    List<LuggageResponse> luggages;
+
 }

@@ -85,6 +85,7 @@ public class FlightController {
     public ResponseEntity<?> getAllFlightsUser() {
         try {
             List<FlightResponse> flightResponses = flightService.getAllFlightsByUser();
+            System.out.println(flightResponses.get(6));
             return ResponseEntity.ok(flightResponses);
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

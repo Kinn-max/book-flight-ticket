@@ -55,4 +55,11 @@ public class TicketServiceImpl implements TicketService {
         ticketBookedInfoAdmin.setCreateAt(ticketEntity.getCreateAt());
         return ticketBookedInfoAdmin;
     }
+
+    @Override
+    public TicketBookedInfo getDetailTicketById(Long id) {
+        TicketEntity ticketEntity = ticketRepository.findById(id).get();
+        TicketBookedInfo ticketBookedInfo = ticketConverter.toTicketBookedInfo(ticketEntity);
+        return ticketBookedInfo;
+    }
 }

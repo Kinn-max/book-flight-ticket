@@ -15,16 +15,24 @@ const items1 = ["Chuyến bay", "Săn vé rẻ", "Blog du lịch"].map(
 )
 export default function NavbarWeb() {
   const [open, setOpen] = useState(false)
+  const [openRegister, setOpenRegister] = useState(false)
+  const showModalRegister = () => {
+    setOpenRegister(true)
+  }
   const showModal = () => {
     setOpen(true)
   }
   const handleOk = (e) => {
-    console.log(e)
     setOpen(false)
   }
+  const handleOkRegister = (e) => {
+    setOpenRegister(false)
+  }
   const handleCancel = (e) => {
-    console.log(e)
     setOpen(false)
+  }
+  const handleCancelRegister = (e) => {
+    setOpenRegister(false)
   }
   const onFinish = async (values) => {
     const data = {
@@ -82,10 +90,13 @@ export default function NavbarWeb() {
         />
         <div>
           <Button type="primary" onClick={showModal}>
-            Login
+            Đăng nhập
+          </Button>
+          <Button type="primary" onClick={showModalRegister}>
+            Đăng ký
           </Button>
           <Modal
-            title="Login now!"
+            title="Đăng nhập ngay!"
             open={open}
             onOk={handleOk}
             onCancel={handleCancel}
@@ -97,7 +108,7 @@ export default function NavbarWeb() {
                 remember: true,
               }}
               style={{
-                maxWidth: 360,
+                maxWidth: "100%",
               }}
               onFinish={onFinish}
             >
@@ -140,6 +151,102 @@ export default function NavbarWeb() {
                   Log in
                 </Button>
                 or <a href="">Register now!</a>
+              </Form.Item>
+            </Form>
+          </Modal>
+          <Modal
+            title="Đăng ký ngay!"
+            open={openRegister}
+            onOk={handleOkRegister}
+            onCancel={handleCancelRegister}
+            footer={null}
+          >
+            <Form
+              name="login"
+              initialValues={{
+                remember: true,
+              }}
+              style={{
+                maxWidth: "100%",
+              }}
+              onFinish={onFinish}
+            >
+              <Form.Item
+                name="username"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Username!",
+                  },
+                ]}
+              >
+                <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" />
+              </Form.Item>
+              <Form.Item
+                name="Số điện thoại"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Password!",
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined />}
+                  type="number"
+                  placeholder="Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="Email"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Password!",
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined />}
+                  type="text"
+                  placeholder="Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="Mật khẩu"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Password!",
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined />}
+                  type="password"
+                  placeholder="Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="Nhập lại mật khẩu"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Password!",
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined />}
+                  type="password"
+                  placeholder="Password"
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button block type="primary" htmlType="submit">
+                  Register
+                </Button>
+                or <a href="">Login now!</a>
               </Form.Item>
             </Form>
           </Modal>
