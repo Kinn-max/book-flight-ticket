@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public class SignUpRequest {
     @NotEmpty(message = "Name cannot empty")
-    @JsonProperty("full_name")
+//    @JsonProperty("full_name")
     private String fullName;
 
     @NotEmpty(message = "Password cannot empty")
@@ -20,11 +20,11 @@ public class SignUpRequest {
     @Email(message = "Invalid email")
     private String email;
 
-    @JsonProperty("phone_number")
+//    @JsonProperty("phone_number")
     @NotEmpty(message = "Phone number cannot empty")
     private String phoneNumber;
 
-    @JsonProperty("date_of_birth")
+//    @JsonProperty("date_of_birth")
     private String dateOfBirth;
 
     private String address;

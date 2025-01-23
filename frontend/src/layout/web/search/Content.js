@@ -31,11 +31,12 @@ import {
 import { getDataSearchHome } from "../../../api/HomeApi"
 import { searchByUser } from "../../../api/FlightApi"
 import LoadingGuest from "../../../util/LoadingGuest"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import dayjs from "dayjs"
 import "dayjs/locale/vi"
 import utc from "dayjs/plugin/utc"
 dayjs.extend(utc)
+const { Option } = Select
 export default function Content() {
   const generateFlightItems = (flightChecked) => [
     {
@@ -128,11 +129,12 @@ export default function Content() {
       children: <p>Các chương trình khuyến mãi hiện có...</p>,
     },
   ]
-
+  const navigate = useNavigate();
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search);
   const disabledDate = (current) => {
     return current < dayjs().startOf("day")
   }
-  const location = useLocation()
   const [activeTabKey, setActiveTabKey] = useState("1")
   const [showTab, setShowTab] = useState(false)
   const [carouselItems, setCarouselItems] = useState([])
@@ -145,76 +147,62 @@ export default function Content() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const totalSlides = carouselItems.length
   const [form] = Form.useForm()
+  ? dayjs(searchParams.get("departureDate")).format("YYYY-MM-DD")
+  : dayjs().format("YYYY-MM-DD");
+
   const [listAirport, setListAirport] = useState([])
   const [seatClasses, setSeatClasses] = useState([])
   const [listFlight, setListFlight] = useState([])
   const [loading, setLoading] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [flightChecked, setFlightChecked] = useState(null)
+  const [listSeatClass, setListSeatClass] = useState({
+    business: { type: "Vé thương gia", price: null },
+    economy: { type: "Vé tiêu chuẩn", price: null },
+  })
+  const [listLuggages, setListLuggages] = useState(null)
   const handleCardClick = () => {
     setActiveTabKey("1")
   }
-  const getDataFlightByHomeSearch = () => {
+  useEffect(() => {
     const queryParams = new URLSearchParams(location.search)
-    const departure = parseInt(queryParams.get("departure"), 10)
-    const arrival = parseInt(queryParams.get("arrival"), 10)
     const departureDate = queryParams.get("departureDate")
-    const seatClass = queryParams.get("seatClass")
-
-    if (!departure || !arrival || !departureDate || !seatClass) {
-      message.error("Thiếu thông tin tìm kiếm!")
-      return
+    const dateObject = new Date(departureDate)
+    let nextDays = []
+    dayjs.locale("vi")
+    for (let i = 0; i < 7; i++) {
+      const nextDay = dayjs(dateObject).add(i, "day")
+      const formattedNextDay = nextDay
+        .format("dddd")
+        .replace(/^th/, "Th")
+        .replace(/^ch/, "Ch")
+      const formattedNextDay2 = nextDay
+        .format("DD [tháng] M")
+        .replace(/^th/, "Th")
+        .replace(/^ch/, "Ch")
+      nextDays.push({
+        day: formattedNextDay,
+        price: `${formattedNextDay2}`,
+      })
     }
-
-    const values = { departure, arrival, departureDate, seatClass }
-    searchBySearch(values)
-  }
-
-  const fetchDataSearchHome = async () => {
+    setCarouselItems(nextDays)
+  }, []);
+  const fetchSearchByUser = async (data) => {
     try {
-      const response = await getDataSearchHome()
+      setLoading(true);
+      const response = await searchByUser(data);
       if (response.ok) {
-        const result = await response.json()
-        setListAirport(result.airportResponses)
-        setSeatClasses(result.seatClasses)
+        const result = await response.json();
+        setListFlight(result);
+        console.log(result);
       }
     } catch (error) {
-      message.error("Không thể lấy dữ liệu sân bay!")
+      console.log("Lỗi tìm kiếm!");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  useEffect(() => {
-    fetchDataSearchHome()
-  }, [])
-  useEffect(() => {
-    getDataFlightByHomeSearch()
-  }, [listAirport])
-
-  const handleShowTab = () => {
-    setShowTab((pre) => !pre)
-  }
-  const onClose = () => {
-    setOpen(false)
-  }
-  const showDrawer = () => {
-    setOpen(true)
-  }
-  const carouselRef = React.useRef(null)
-  if (loading) return <LoadingGuest />
-  const nextSlide = () => {
-    carouselRef.current.next()
-  }
-
-  const prevSlide = () => {
-    carouselRef.current.prev()
-  }
-  const showDrawerRight = () => {
-    setOpenRight(true)
-    setShowTab(true)
-  }
-  const onCloseRight = () => {
-    setOpenRight(false)
-    setShowTab(false)
-  }
   const searchBySearch = (values) => {
     const { departure, arrival, departureDate, seatClass } = values
     if (!departure) {
@@ -255,24 +243,6 @@ export default function Content() {
       .replace(/^ch/, "Ch")
 
     const formTo = `${form} -> ${to}`
-    let nextDays = []
-    dayjs.locale("vi")
-    for (let i = 0; i < 7; i++) {
-      const nextDay = dayjs(dateObject).add(i, "day")
-      const formattedNextDay = nextDay
-        .format("dddd")
-        .replace(/^th/, "Th")
-        .replace(/^ch/, "Ch")
-      const formattedNextDay2 = nextDay
-        .format("DD [tháng] M")
-        .replace(/^th/, "Th")
-        .replace(/^ch/, "Ch")
-      nextDays.push({
-        day: formattedNextDay,
-        price: `${formattedNextDay2}`,
-      })
-    }
-    setCarouselItems(nextDays)
     setTitleSearch((prevState) => ({
       ...prevState,
       fromTo: formTo,
@@ -285,23 +255,116 @@ export default function Content() {
       departureTime: departureTime,
       seatClass: seatClass,
     }
-    const fetchSearchByUser = async () => {
-      try {
-        setLoading(true)
-        const response = await searchByUser(data)
-        if (response.ok) {
-          const result = await response.json()
-          setListFlight(result)
-          console.log(result)
-          onClose()
-        }
-      } catch (error) {
-        console.log("Lỗi tìm kiếm!")
-      }
-      setLoading(false)
-    }
-    fetchSearchByUser()
+    fetchSearchByUser(data);
   }
+  const getDataFlightByHomeSearch = () => {
+    const queryParams = new URLSearchParams(location.search)
+    const departure = parseInt(queryParams.get("departure"), 10)
+    const arrival = parseInt(queryParams.get("arrival"), 10)
+    const departureDate = queryParams.get("departureDate")
+    const seatClass = queryParams.get("seatClass")
+
+    if (!departure || !arrival || !departureDate || !seatClass) {
+      message.error("Thiếu thông tin tìm kiếm!")
+      return
+    }
+
+    const values = { departure, arrival, departureDate, seatClass }
+    searchBySearch(values)
+  }
+
+  const fetchDataSearchHome = async () => {
+    try {
+      const response = await getDataSearchHome()
+      if (response.ok) {
+        const result = await response.json()
+        setListAirport(result.airportResponses)
+        setSeatClasses(result.seatClasses)
+      }
+    } catch (error) {
+      message.error("Không thể lấy dữ liệu sân bay!")
+    }
+  }
+  useEffect(() => {
+   
+    handleDateChange(0);
+  }, []);
+  useEffect(() => {
+    const departureDate = searchParams.get("departureDate");
+    if (departureDate) {
+      const formattedDate = dayjs(departureDate)
+        .locale("vi")
+        .format("dddd, DD [th] MM YYYY")
+        .replace(/^th/, "Th")
+        .replace(/^ch/, "Ch");
+  
+      setTitleSearch((prevState) => ({
+        ...prevState,
+        date: formattedDate,
+      }));
+    }
+  }, [location.search]); 
+  useEffect(() => {
+    fetchDataSearchHome()
+  }, [location.search])
+  useEffect(() => {
+    getDataFlightByHomeSearch()
+  }, [listAirport])
+  const handleShowTab = () => {
+    setShowTab((pre) => !pre)
+  }
+  const onClose = () => {
+    setOpen(false)
+  }
+  const showDrawer = () => {
+    setOpen(true)
+  }
+  const carouselRef = React.useRef(null)
+  if (loading) return <LoadingGuest />
+  const nextSlide = () => {
+    carouselRef.current.next()
+  }
+
+  const prevSlide = () => {
+    carouselRef.current.prev()
+  }
+  const showDrawerRight = () => {
+    setOpenRight(true)
+    setShowTab(true)
+  }
+  const onCloseRight = () => {
+    setOpenRight(false)
+    setShowTab(false)
+  }
+
+  const handleDateChange = (index) => {
+    if (selectedIndex === index) {
+      return;
+    }
+    const prevIndex = selectedIndex;
+    const countChange = index - prevIndex; 
+
+    const currentDepartureDate = searchParams.get("departureDate");
+    if (currentDepartureDate) {
+      const currentDate = dayjs(currentDepartureDate);
+      const updatedDate = currentDate.add(countChange, "day").format("YYYY-MM-DD");
+      searchParams.set("departureDate", updatedDate);
+      navigate(`?${searchParams.toString()}`);
+      const formattedDate = dayjs(updatedDate)
+      .locale("vi")
+      .format("dddd, DD [th] MM YYYY")
+      .replace(/^th/, "Th")
+      .replace(/^ch/, "Ch");
+
+      setTitleSearch((prevState) => ({
+        ...prevState,
+        date: formattedDate,
+      }));
+    }
+    setSelectedIndex(index);
+  };
+  
+  
   return (
     <div>
       <Card
@@ -471,6 +534,7 @@ export default function Content() {
                     {carouselItems.map((item, index) => (
                       <div
                         key={index}
+                        className={selectedIndex === index ? 'pick-item' : ''}
                         style={{
                           textAlign: "center",
                           padding: "10px",
@@ -483,6 +547,8 @@ export default function Content() {
                           flexDirection: "column",
                           alignItems: "center",
                         }}
+                       
+                        onClick={() => handleDateChange(index)}
                       >
                         <span
                           style={{
@@ -595,6 +661,13 @@ export default function Content() {
                   style={{ borderRadius: "5px" }}
                   onClick={() => {
                     setFlightChecked(item)
+                    setListSeatClass((prev) => ({
+                      ...prev,
+                      business: { ...prev.business, price: item.busPrice },
+                      economy: { ...prev.economy, price: item.ecoPrice },
+                    }))
+                    setListLuggages(item.luggages
+                    )
                     showDrawerRight()
                   }}
                 >
@@ -705,27 +778,52 @@ export default function Content() {
               maxWidth: "1200px",
               backgroundColor: "#f8f9fa",
               height: "200px",
+              marginBottom: "20px",
             }}
           >
             <div
               className="row w-100 justify-content-between align-items-center"
               style={{ gap: "10px" }}
             >
-              <div className="col-6">
-                <h5 style={{ margin: 0, fontWeight: "600", color: "#333" }}>
-                  Tổng cộng cho 1 khách
-                </h5>
-                <span style={{ color: "#555" }}>
-                  Giá vé: <b>1.000.000</b>
+              <div className="col-8">
+                <span style={{ color: "#555", fontSize: "15px" }}>
+                  Loại vé:{" "}
+                  <b>
+                    <Select
+                      placeholder="Chọn loại vé"
+                      className="no-border-select"
+                      style={{ width: "250px" }}
+                    >
+                      {Object.entries(listSeatClass).map(([key, item]) => (
+                        <Option key={key} value={key}>
+                          {item.type} (
+                          {item.price
+                            ? `${item.price.toLocaleString("vi-VN")} VND`
+                            : "Chưa có giá"}
+                          )
+                        </Option>
+                      ))}
+                    </Select>
+                  </b>
                 </span>
                 <br />
                 <span style={{ color: "#555" }}>
-                  Hành lý ký gửi: <b>0</b>
+                  Hành lý ký gửi: 
+                    <b>
+                    <Select
+                         style={{ width: "250px" }}
+                      placeholder="Chọn hạng ghế"
+                      className="no-border-select"
+                    >
+                      {listLuggages && (listLuggages.map((item, index) => (
+                        <Option key={index} value={item.id}>
+                          {`Cân nặng:${item.weight} - ${item.price}`}
+                        </Option>
+                      )))}
+                    </Select>
+                  </b>
                 </span>
                 <br />
-                <span style={{ color: "#555" }}>
-                  Ví trí ngồi: <b>A1</b>
-                </span>
                 <div
                   style={{
                     fontSize: "16px",
@@ -736,21 +834,21 @@ export default function Content() {
                 >
                   Tổng: <b>1.000.000</b>
                 </div>
-              </div>
-              <div className="col-6 text-end">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    padding: "25px 30px",
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    borderRadius: "8px",
-                  }}
-                  danger
-                >
-                  Tiếp tục đặt chỗ
-                </Button>
+                <div className=" w-100 d-flex justify-content-end">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{
+                      padding: "25px 30px",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                      borderRadius: "8px",
+                    }}
+                    danger
+                  >
+                    Tiếp tục đặt chỗ
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>

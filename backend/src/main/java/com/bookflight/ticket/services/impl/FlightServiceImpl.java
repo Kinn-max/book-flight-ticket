@@ -94,7 +94,7 @@ public class FlightServiceImpl implements FlightService {
                     seatEntity.setSeatNumber(c + String.valueOf(i + 1));
                     seatEntity.setFlightEntity(flightEntity);
                     seatRepository.save(seatEntity);
-                    seatCounter++; // Tăng số ghế đã tạo
+                    seatCounter++;
                 }
             }
 
@@ -125,7 +125,7 @@ public class FlightServiceImpl implements FlightService {
 
             List<FlightEntity> flightEntityList = flightRepository.searchFlight(flightRequest.getDepartureAirport(), flightRequest.getArrivalAirport(), departureTime, flightRequest.getSeatClass());
             flightEntityList.forEach((flightEntity) -> {
-                FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity,false);
+                FlightResponse flightResponse = flightConverter.toFlightResponse(flightEntity,true);
                 flightResponseList.add(flightResponse);
             });
             return flightResponseList;
