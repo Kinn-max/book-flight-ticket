@@ -56,7 +56,6 @@ export default function CommonHome() {
   }, [])
   const searchBySearch = (values) => {
     const { departure, arrival, departureDate, seatClass } = values
-    console.log(values)
     if (!departure) {
       message.error("Sân bay đi không được để trống!")
       return
@@ -76,15 +75,17 @@ export default function CommonHome() {
       message.error("Hạng ghế không được để trống!")
       return
     }
+    
+    const formattedDate = departureDate.format("DD-MM-YYYY");
+
     const queryParams = new URLSearchParams({
       departure,
       arrival,
-      departureDate,
+      departureDate, 
       seatClass,
-    }).toString()
+    }).toString();
+    console.log(queryParams)
     navigate(`/search?${queryParams}`)
-
-    message.success("done!")
   }
   return (
     <div style={{ backgroundColor: "#f0f2f5", padding: "20px" }}>

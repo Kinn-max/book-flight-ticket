@@ -3,7 +3,7 @@ import { Button, Card, Carousel, Checkbox, Menu, Radio, Slider } from "antd"
 import { SettingOutlined } from "@ant-design/icons"
 import SubMenu from "antd/es/menu/SubMenu"
 
-export default function Filter() {
+export default function Filter({ listAirline }) {
   const timeRanges = [
     { label: "Đêm đến Sáng", time: "00:00 - 06:00" },
     { label: "Sáng đến Trưa", time: "06:00 - 12:00" },
@@ -31,30 +31,14 @@ export default function Filter() {
     {
       key: "sub4",
       label: "Hãng hàng không",
-      children: [
-        {
-          key: "9",
-          label: "Vietravel Airlines",
-          price: 1200000,
-        },
-        {
-          key: "10",
-          label: "Vietravel Airlines",
-          price: 1200000,
-        },
-        {
-          key: "11",
-          label: "Vietravel Airlines",
-          price: 1200000,
-        },
-        {
-          key: "12",
-          label: "Vietravel Airlines",
-          price: 1200000,
-        },
-      ],
+      children: listAirline.map((airline) => ({
+        key: airline.key,
+        label: airline.label,
+        price: airline.price,
+        logo: airline.logo
+      })),
     },
-  ]
+  ];
   const onClick = (e) => {
     console.log("click ", e)
   }
@@ -74,21 +58,21 @@ export default function Filter() {
           <div className="d-flex">
             <div
               style={{
-                width: 30,
-                height: 30,
+                width: 70,
+                height: 50,
                 marginRight: "8px",
                 borderRadius: "10px",
               }}
             >
               <img
-                src="https://ik.imagekit.io/tvlk/image/imageResource/2020/02/19/1582084897287-d2de240a06eac5e3a70126425b62ee0b.png?tr=dpr-2,h-24,q-75"
+               src={child.logo}
                 alt="logo"
                 style={{ width: "100%" }}
               />
             </div>
             <div>
               <span className="fs-6">{child.label}</span>
-              <p className="fs-10">{child.price}</p>
+              <p className="fs-10">{child.price.toLocaleString("vi-VN")}đ</p>
             </div>
           </div>
         </Checkbox>

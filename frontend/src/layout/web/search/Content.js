@@ -17,7 +17,11 @@ import {
   message,
   Spin,
 } from "antd"
-
+import {
+  faPlaneArrival,
+  faPlaneDeparture,
+} from "@fortawesome/free-solid-svg-icons"
+import { ReactComponent as SeatIcon } from "../../../assets/icon/seat.svg"
 import {
   CalendarOutlined,
   CheckCircleOutlined,
@@ -35,9 +39,10 @@ import { useLocation, useNavigate } from "react-router-dom"
 import dayjs from "dayjs"
 import "dayjs/locale/vi"
 import utc from "dayjs/plugin/utc"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 dayjs.extend(utc)
 const { Option } = Select
-export default function Content() {
+export default function Content({ setListAirline }) {
   const generateFlightItems = (flightChecked) => [
     {
       key: "1",
@@ -129,6 +134,7 @@ export default function Content() {
       children: <p>Các chương trình khuyến mãi hiện có...</p>,
     },
   ]
+  const [form] = Form.useForm()
   const navigate = useNavigate();
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search);
@@ -146,7 +152,6 @@ export default function Content() {
   })
   const [currentIndex, setCurrentIndex] = useState(0)
   const totalSlides = carouselItems.length
-  const [form] = Form.useForm()
   ? dayjs(searchParams.get("departureDate")).format("YYYY-MM-DD")
   : dayjs().format("YYYY-MM-DD");
 
@@ -189,11 +194,21 @@ export default function Content() {
   }, []);
   const fetchSearchByUser = async (data) => {
     try {
+      const queryParams = new URLSearchParams({
+        departure:data.departureAirport,
+        arrival:data.arrivalAirport,
+        departureDate:data.departureTime,
+        seatClass:data.seatClass,
+      }).toString()
+      navigate(`/search?${queryParams}`)
       setLoading(true);
+      data.departureTime = dayjs(data.departureTime).format
+      ("DD-MM-YYYY");
       const response = await searchByUser(data);
       if (response.ok) {
         const result = await response.json();
         setListFlight(result);
+        filterAline(result)
         console.log(result);
       }
     } catch (error) {
@@ -202,61 +217,85 @@ export default function Content() {
       setLoading(false);
     }
   };
-
+  const filterAline = (items) => {
+    setListAirline((prevList) => {
+      const newList = []; 
+  
+      items.forEach((item) => {
+        const isExist = newList.some((airline) => airline.label === item.airline);
+        if (!isExist) {
+          newList.push({
+            key: item.id.toString(),
+            label: item.airline,
+            price: item.ecoPrice,
+            logo: item.logoAirline
+          });
+        }
+      });
+  
+      return newList;
+    });
+  };
+  
   const searchBySearch = (values) => {
-    const { departure, arrival, departureDate, seatClass } = values
+    const { departure, arrival, departureDate, seatClass } = values;
     if (!departure) {
-      message.error("Sân bay đi không được để trống!")
-      return
+      message.error("Sân bay đi không được để trống!");
+      return;
     }
-
+  
     if (!arrival) {
-      message.error("Sân bay đến không được để trống!")
-      return
+      message.error("Sân bay đến không được để trống!");
+      return;
     }
-
+  
     if (!departureDate) {
-      message.error("Ngày đi không được để trống!")
-      return
+      message.error("Ngày đi không được để trống!");
+      return;
     }
-
+  
     if (!seatClass) {
-      message.error("Hạng ghế không được để trống!")
-      return
+      message.error("Hạng ghế không được để trống!");
+      return;
     }
-    const dateObject = new Date(departureDate)
-    const departureTime = dayjs(dateObject).format("DD-MM-YYYY")
-    let form = ""
-    let to = ""
+  
+    const dateObject = new Date(departureDate);
+    const departureTime = dayjs(dateObject).format("YYYY-MM-DD"); 
+    let form = "";
+    let to = "";
     listAirport.forEach((airport) => {
       if (airport.id === departure) {
-        form = `${airport.location} (${airport.code})`
+        form = `${airport.location} (${airport.code})`;
       }
       if (airport.id === arrival) {
-        to = `${airport.location} (${airport.code})`
+        to = `${airport.location} (${airport.code})`;
       }
-    })
+    });
+  
     const formattedDate = dayjs(dateObject)
       .locale("vi")
       .format("dddd, DD [th] MM YYYY")
       .replace(/^th/, "Th")
-      .replace(/^ch/, "Ch")
-
-    const formTo = `${form} -> ${to}`
+      .replace(/^ch/, "Ch");
+  
+    const formTo = `${form} -> ${to}`;
     setTitleSearch((prevState) => ({
       ...prevState,
       fromTo: formTo,
       date: formattedDate,
-    }))
-    console.log(formTo, formattedDate)
+    }));
+  
+    console.log(formTo, formattedDate);
+  
     const data = {
       departureAirport: departure,
       arrivalAirport: arrival,
       departureTime: departureTime,
       seatClass: seatClass,
-    }
+    };
+    console.log(data)
     fetchSearchByUser(data);
-  }
+  };
   const getDataFlightByHomeSearch = () => {
     const queryParams = new URLSearchParams(location.search)
     const departure = parseInt(queryParams.get("departure"), 10)
@@ -270,6 +309,7 @@ export default function Content() {
     }
 
     const values = { departure, arrival, departureDate, seatClass }
+    // console.log(values)
     searchBySearch(values)
   }
 
@@ -286,7 +326,6 @@ export default function Content() {
     }
   }
   useEffect(() => {
-   
     handleDateChange(0);
   }, []);
   useEffect(() => {
@@ -437,52 +476,72 @@ export default function Content() {
                 <h4 className="pb-4 text-capitalize">
                   Tìm chuyến bay bạn muốn đến
                 </h4>
-                <div className="row g-3">
-                  <div className="col-md-6">
-                    <Form.Item label="Sân bay đi" name="departure">
-                      <Select placeholder="Chọn sân bay đi">
-                        {listAirport.map((item, index) => (
-                          <Select.Option key={index} value={item.id}>
-                            {item.name} ({item.code})
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                  <div className="col-md-6">
-                    <Form.Item label="Sân bay đến" name="arrival">
-                      <Select placeholder="Chọn sân bay đến">
-                        {listAirport.map((item, index) => (
-                          <Select.Option key={index} value={item.id}>
-                            {item.name} ({item.code})
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                </div>
-                <div className="row g-3">
-                  <div className="col-md-6">
-                    <Form.Item label="Ngày đi" name="departureDate">
-                      <DatePicker
-                        disabledDate={disabledDate}
-                        format="DD-MM-YYYY"
-                        placeholder="Chọn ngày đi"
-                      />
-                    </Form.Item>
-                  </div>
-                  <div className="col-md-6">
-                    <Form.Item label="Hạng ghế" name="seatClass">
-                      <Select placeholder="Chọn hạng ghế">
-                        {seatClasses.map((item, index) => (
+                <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Từ" name="departure">
+                <Select
+                  prefix={<FontAwesomeIcon icon={faPlaneDeparture} />}
+                  placeholder="Chọn điểm đi"
+                  className="no-border-select"
+                >
+                  {listAirport.map((item) => (
+                    <Option key={item.id} value={item.id}>
+                      {item.name} ({item.code})
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Đến" name="arrival">
+                <Select
+                  prefix={<FontAwesomeIcon icon={faPlaneArrival} />}
+                  placeholder="Chọn điểm đến"
+                  className="no-border-select"
+                >
+                  {listAirport.map((item) => (
+                    <Option key={item.id} value={item.id}>
+                      {item.name} ({item.code})
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Ngày đi"
+                style={{ flex: 1 }}
+                name="departureDate"
+              >
+                <DatePicker
+                  prefix={<CalendarOutlined />}
+                  suffixIcon={[]}
+                  placeholder="Chọn ngày"
+                  disabledDate={disabledDate}
+                  format="DD-MM-YYYY"
+                  style={{ width: "100%" }}
+                  className="no-border-date"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Hạng ghế" style={{ flex: 1 }} name="seatClass">
+                <Select
+                  prefix={<SeatIcon width={18} height={18} />}
+                  placeholder="Chọn hạng ghế"
+                  className="no-border-select"
+                >
+                  {seatClasses.map((item, index) => (
                           <Select.Option key={index} value={item}>
                             {item}
                           </Select.Option>
                         ))}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                </div>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
                 <div className="d-flex justify-content-end mt-4">
                   <Button
                     type="primary"
