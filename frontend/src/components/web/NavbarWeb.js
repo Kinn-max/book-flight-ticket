@@ -1,11 +1,14 @@
-import { Layout, Menu } from "antd"
+import { DatePicker, Layout, Menu } from "antd"
 import { Header } from "antd/es/layout/layout"
 import React, { useEffect, useState } from "react"
 import { Button, Modal, Checkbox, Form, Input, Flex } from "antd"
 import { LockOutlined, UserOutlined } from "@ant-design/icons"
-import { login } from "../../api/UserApi"
+import { login, register } from "../../api/UserApi"
 import Loading from "../../util/Loading"
 import { jwtDecode } from "jwt-decode"
+import dayjs from "dayjs"
+import customParseFormat from "dayjs/plugin/customParseFormat"
+dayjs.extend(customParseFormat)
 
 const items1 = ["Chuyến bay", "Săn vé rẻ", "Blog du lịch"].map(
   (key, index) => ({
@@ -13,6 +16,12 @@ const items1 = ["Chuyến bay", "Săn vé rẻ", "Blog du lịch"].map(
     label: key,
   })
 )
+
+const disabledDate = (current) => {
+  // Can not select days before today and today
+  return current && current > dayjs().endOf("day")
+}
+
 export default function NavbarWeb() {
   const [open, setOpen] = useState(false)
   const [openRegister, setOpenRegister] = useState(false)
@@ -64,6 +73,29 @@ export default function NavbarWeb() {
     }
   }
 
+  const onRegisterFinish = async (values) => {
+    const dob = new Date(values.dob)
+    const formatDate = [
+      ("0" + dob.getDate()).slice(-2),
+      ("0" + (dob.getMonth() + 1)).slice(-2),
+      dob.getFullYear(),
+    ].join("-")
+    const data = {
+      email: values.email,
+      password: values.password,
+      address: values.address,
+      phoneNumber: values.phone,
+      fullName: values.name,
+      dateOfBirth: formatDate,
+    }
+    try {
+      await register(data)
+      setOpenRegister(false)
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  }
+
   return (
     <div>
       <Header
@@ -101,6 +133,7 @@ export default function NavbarWeb() {
             onOk={handleOk}
             onCancel={handleCancel}
             footer={null}
+            centered
           >
             <Form
               name="login"
@@ -160,93 +193,135 @@ export default function NavbarWeb() {
             onOk={handleOkRegister}
             onCancel={handleCancelRegister}
             footer={null}
+            centered
           >
             <Form
-              name="login"
+              layout="vertical"
+              name="register"
+              style={{
+                maxWidth: 600,
+              }}
               initialValues={{
                 remember: true,
               }}
-              style={{
-                maxWidth: "100%",
-              }}
-              onFinish={onFinish}
+              onFinish={onRegisterFinish}
+              autoComplete="off"
             >
               <Form.Item
-                name="username"
+                label="Full name"
+                name="name"
                 rules={[
                   {
                     required: true,
-                    message: "Please input your Username!",
+                    message: "Please input your name!",
                   },
                 ]}
               >
-                <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" />
+                <Input />
               </Form.Item>
               <Form.Item
-                name="Số điện thoại"
+                label="Email"
+                name="email"
                 rules={[
                   {
+                    type: "email",
+                    message: "The input is not valid E-mail!",
+                  },
+                  {
                     required: true,
-                    message: "Please input your Password!",
+                    message: "Please input your E-mail!",
                   },
                 ]}
               >
-                <Input
-                  prefix={<LockOutlined />}
-                  type="number"
-                  placeholder="Password"
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password!",
+                  },
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item
+                label="Confirm Password"
+                name="confirmPassword"
+                dependencies={["password"]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password!",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve()
+                      }
+                      return Promise.reject(
+                        new Error("The password that you entered do not match!")
+                      )
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item
+                label="Phone"
+                name="phone"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your phone!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Address"
+                name="address"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your address!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Date of birth"
+                name="dob"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select your DOB!",
+                  },
+                ]}
+              >
+                <DatePicker
+                  style={{ width: "100%" }}
+                  disabledDate={disabledDate}
+                  // format="DD/MM/YYYY"
                 />
               </Form.Item>
               <Form.Item
-                name="Email"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Password!",
-                  },
-                ]}
+                label={null}
+                style={{ display: "flex", justifyContent: "center" }}
               >
-                <Input
-                  prefix={<LockOutlined />}
-                  type="text"
-                  placeholder="Password"
-                />
-              </Form.Item>
-              <Form.Item
-                name="Mật khẩu"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Password!",
-                  },
-                ]}
-              >
-                <Input
-                  prefix={<LockOutlined />}
-                  type="password"
-                  placeholder="Password"
-                />
-              </Form.Item>
-              <Form.Item
-                name="Nhập lại mật khẩu"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Password!",
-                  },
-                ]}
-              >
-                <Input
-                  prefix={<LockOutlined />}
-                  type="password"
-                  placeholder="Password"
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button block type="primary" htmlType="submit">
+                <Button onClick={handleCancelRegister}>Cancel</Button>
+                <Button
+                  htmlType="submit"
+                  type="primary"
+                  style={{ marginLeft: "8px" }}
+                >
                   Register
                 </Button>
-                or <a href="">Login now!</a>
               </Form.Item>
             </Form>
           </Modal>
