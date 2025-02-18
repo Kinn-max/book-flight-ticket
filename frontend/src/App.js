@@ -11,6 +11,7 @@ import DashboardComponent from "./components/admin/DashboardComponent"
 import CommonHome from "./layout/web/home/CommonHome"
 import CommonSearch from "./layout/web/search/CommonSearch"
 import { jwtDecode } from "jwt-decode"
+import Booking from "./layout/web/booking/booking"
 
 function App() {
   const token = localStorage.getItem("jwtToken")
@@ -28,6 +29,7 @@ function App() {
           <Route path="/*" element={<CommonWeb />}>
             <Route path="" element={<CommonHome />} />
             <Route path="search" element={<CommonSearch />} />
+            <Route path="booking" element={<Booking />} />
           </Route>
           <Route
             path="/admin/*"

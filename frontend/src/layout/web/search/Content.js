@@ -39,10 +39,10 @@ import { useLocation, useNavigate } from "react-router-dom"
 import dayjs from "dayjs"
 import "dayjs/locale/vi"
 import utc from "dayjs/plugin/utc"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 dayjs.extend(utc)
 const { Option } = Select
-export default function Content({ setListAirline }) {
+export default function Content({ setListAirline, filterAirline }) {
   const generateFlightItems = (flightChecked) => [
     {
       key: "1",
@@ -135,9 +135,9 @@ export default function Content({ setListAirline }) {
     },
   ]
   const [form] = Form.useForm()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const location = useLocation()
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(location.search)
   const disabledDate = (current) => {
     return current < dayjs().startOf("day")
   }
@@ -152,19 +152,25 @@ export default function Content({ setListAirline }) {
   })
   const [currentIndex, setCurrentIndex] = useState(0)
   const totalSlides = carouselItems.length
-  ? dayjs(searchParams.get("departureDate")).format("YYYY-MM-DD")
-  : dayjs().format("YYYY-MM-DD");
+    ? dayjs(searchParams.get("departureDate")).format("YYYY-MM-DD")
+    : dayjs().format("YYYY-MM-DD")
 
   const [listAirport, setListAirport] = useState([])
   const [seatClasses, setSeatClasses] = useState([])
   const [listFlight, setListFlight] = useState([])
+  const [listFlightFilter, setListFlightFilter] = useState([])
   const [loading, setLoading] = useState(false)
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const [flightChecked, setFlightChecked] = useState(null)
   const [listSeatClass, setListSeatClass] = useState({
     business: { type: "Vé thương gia", price: null },
     economy: { type: "Vé tiêu chuẩn", price: null },
   })
+  const [selectedSeatClass, setSelectedSeatClass] = useState(null)
+  const [selectedLuggage, setSelectedLuggage] = useState(null)
+  const [seatPrice, setSeatPrice] = useState(0)
+  const [luggagePrice, setLuggagePrice] = useState(0)
+
   const [listLuggages, setListLuggages] = useState(null)
   const handleCardClick = () => {
     setActiveTabKey("1")
@@ -191,111 +197,114 @@ export default function Content({ setListAirline }) {
       })
     }
     setCarouselItems(nextDays)
-  }, []);
+  }, [])
+
   const fetchSearchByUser = async (data) => {
     try {
       const queryParams = new URLSearchParams({
-        departure:data.departureAirport,
-        arrival:data.arrivalAirport,
-        departureDate:data.departureTime,
-        seatClass:data.seatClass,
+        departure: data.departureAirport,
+        arrival: data.arrivalAirport,
+        departureDate: data.departureTime,
+        seatClass: data.seatClass,
       }).toString()
       navigate(`/search?${queryParams}`)
-      setLoading(true);
-      data.departureTime = dayjs(data.departureTime).format
-      ("DD-MM-YYYY");
-      const response = await searchByUser(data);
+      setLoading(true)
+      data.departureTime = dayjs(data.departureTime).format("DD-MM-YYYY")
+      const response = await searchByUser(data)
       if (response.ok) {
-        const result = await response.json();
-        setListFlight(result);
+        const result = await response.json()
+        setListFlight(result)
+        setListFlightFilter(result)
         filterAline(result)
-        console.log(result);
+        console.log(result)
       }
     } catch (error) {
-      console.log("Lỗi tìm kiếm!");
+      console.log("Lỗi tìm kiếm!")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
   const filterAline = (items) => {
     setListAirline((prevList) => {
-      const newList = []; 
-  
+      const newList = []
+
       items.forEach((item) => {
-        const isExist = newList.some((airline) => airline.label === item.airline);
+        const isExist = newList.some(
+          (airline) => airline.label === item.airline
+        )
         if (!isExist) {
           newList.push({
             key: item.id.toString(),
             label: item.airline,
             price: item.ecoPrice,
-            logo: item.logoAirline
-          });
+            logo: item.logoAirline,
+          })
         }
-      });
-  
-      return newList;
-    });
-  };
-  
+      })
+
+      return newList
+    })
+  }
+
   const searchBySearch = (values) => {
-    const { departure, arrival, departureDate, seatClass } = values;
+    const { departure, arrival, departureDate, seatClass } = values
     if (!departure) {
-      message.error("Sân bay đi không được để trống!");
-      return;
+      message.error("Sân bay đi không được để trống!")
+      return
     }
-  
+
     if (!arrival) {
-      message.error("Sân bay đến không được để trống!");
-      return;
+      message.error("Sân bay đến không được để trống!")
+      return
     }
-  
+
     if (!departureDate) {
-      message.error("Ngày đi không được để trống!");
-      return;
+      message.error("Ngày đi không được để trống!")
+      return
     }
-  
+
     if (!seatClass) {
-      message.error("Hạng ghế không được để trống!");
-      return;
+      message.error("Hạng ghế không được để trống!")
+      return
     }
-  
-    const dateObject = new Date(departureDate);
-    const departureTime = dayjs(dateObject).format("YYYY-MM-DD"); 
-    let form = "";
-    let to = "";
+
+    const dateObject = new Date(departureDate)
+    const departureTime = dayjs(dateObject).format("YYYY-MM-DD")
+    let form = ""
+    let to = ""
     listAirport.forEach((airport) => {
       if (airport.id === departure) {
-        form = `${airport.location} (${airport.code})`;
+        form = `${airport.location} (${airport.code})`
       }
       if (airport.id === arrival) {
-        to = `${airport.location} (${airport.code})`;
+        to = `${airport.location} (${airport.code})`
       }
-    });
-  
+    })
+
     const formattedDate = dayjs(dateObject)
       .locale("vi")
       .format("dddd, DD [th] MM YYYY")
       .replace(/^th/, "Th")
-      .replace(/^ch/, "Ch");
-  
-    const formTo = `${form} -> ${to}`;
+      .replace(/^ch/, "Ch")
+
+    const formTo = `${form} -> ${to}`
     setTitleSearch((prevState) => ({
       ...prevState,
       fromTo: formTo,
       date: formattedDate,
-    }));
-  
-    console.log(formTo, formattedDate);
-  
+    }))
+
+    console.log(formTo, formattedDate)
+
     const data = {
       departureAirport: departure,
       arrivalAirport: arrival,
       departureTime: departureTime,
       seatClass: seatClass,
-    };
+    }
     console.log(data)
-    fetchSearchByUser(data);
-  };
+    fetchSearchByUser(data)
+  }
   const getDataFlightByHomeSearch = () => {
     const queryParams = new URLSearchParams(location.search)
     const departure = parseInt(queryParams.get("departure"), 10)
@@ -326,29 +335,32 @@ export default function Content({ setListAirline }) {
     }
   }
   useEffect(() => {
-    handleDateChange(0);
-  }, []);
+    handleDateChange(0)
+  }, [])
   useEffect(() => {
-    const departureDate = searchParams.get("departureDate");
+    const departureDate = searchParams.get("departureDate")
     if (departureDate) {
       const formattedDate = dayjs(departureDate)
         .locale("vi")
         .format("dddd, DD [th] MM YYYY")
         .replace(/^th/, "Th")
-        .replace(/^ch/, "Ch");
-  
+        .replace(/^ch/, "Ch")
+
       setTitleSearch((prevState) => ({
         ...prevState,
         date: formattedDate,
-      }));
+      }))
     }
-  }, [location.search]); 
+  }, [location.search])
   useEffect(() => {
     fetchDataSearchHome()
   }, [location.search])
   useEffect(() => {
     getDataFlightByHomeSearch()
   }, [listAirport])
+  useEffect(() => {
+    handleFilterAirline()
+  }, [filterAirline])
   const handleShowTab = () => {
     setShowTab((pre) => !pre)
   }
@@ -374,36 +386,80 @@ export default function Content({ setListAirline }) {
   const onCloseRight = () => {
     setOpenRight(false)
     setShowTab(false)
+    setSelectedSeatClass(null)
+    setSelectedLuggage(null)
+    setSeatPrice(0)
+    setLuggagePrice(0)
   }
-
   const handleDateChange = (index) => {
     if (selectedIndex === index) {
-      return;
+      return
     }
-    const prevIndex = selectedIndex;
-    const countChange = index - prevIndex; 
+    const prevIndex = selectedIndex
+    const countChange = index - prevIndex
 
-    const currentDepartureDate = searchParams.get("departureDate");
+    const currentDepartureDate = searchParams.get("departureDate")
     if (currentDepartureDate) {
-      const currentDate = dayjs(currentDepartureDate);
-      const updatedDate = currentDate.add(countChange, "day").format("YYYY-MM-DD");
-      searchParams.set("departureDate", updatedDate);
-      navigate(`?${searchParams.toString()}`);
+      const currentDate = dayjs(currentDepartureDate)
+      const updatedDate = currentDate
+        .add(countChange, "day")
+        .format("YYYY-MM-DD")
+      searchParams.set("departureDate", updatedDate)
+      navigate(`?${searchParams.toString()}`)
       const formattedDate = dayjs(updatedDate)
-      .locale("vi")
-      .format("dddd, DD [th] MM YYYY")
-      .replace(/^th/, "Th")
-      .replace(/^ch/, "Ch");
+        .locale("vi")
+        .format("dddd, DD [th] MM YYYY")
+        .replace(/^th/, "Th")
+        .replace(/^ch/, "Ch")
 
       setTitleSearch((prevState) => ({
         ...prevState,
         date: formattedDate,
-      }));
+      }))
     }
-    setSelectedIndex(index);
-  };
-  
-  
+    setSelectedIndex(index)
+  }
+  const handleFilterAirline = () => {
+    if (filterAirline.length > 0) {
+      const filteredFlights = listFlight.filter((flight) =>
+        filterAirline.includes(flight.airline)
+      )
+      setListFlightFilter(filteredFlights)
+      console.log("Filtered Flights:", filteredFlights)
+    } else {
+      setListFlightFilter(listFlight)
+    }
+  }
+  const handleOnChangeTicket = (value, price) => {
+    setSelectedSeatClass(value)
+    setSeatPrice(price)
+  }
+  const handleOnChangeLuggage = (value, price) => {
+    setSelectedLuggage(value)
+    setLuggagePrice(price)
+  }
+  const handleBooking = (flightData) => {
+    console.log("Dữ liệu chuyến bay:", flightData.id)
+    console.log("Dữ liệu Luggage:", selectedLuggage)
+    let tmp = ""
+    if (selectedSeatClass === "economy") {
+      tmp = "Economy Class"
+    }
+    if (selectedSeatClass === "business") {
+      tmp = "Business Class"
+    }
+    if (tmp === "") {
+      message.warning("Bạn phải chọn loại ghế!")
+    } else {
+      navigate("/booking", {
+        state: {
+          flight: flightData,
+          luggage: selectedLuggage,
+          seatClass: tmp,
+        },
+      })
+    }
+  }
   return (
     <div>
       <Card
@@ -477,71 +533,75 @@ export default function Content({ setListAirline }) {
                   Tìm chuyến bay bạn muốn đến
                 </h4>
                 <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Từ" name="departure">
-                <Select
-                  prefix={<FontAwesomeIcon icon={faPlaneDeparture} />}
-                  placeholder="Chọn điểm đi"
-                  className="no-border-select"
-                >
-                  {listAirport.map((item) => (
-                    <Option key={item.id} value={item.id}>
-                      {item.name} ({item.code})
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Đến" name="arrival">
-                <Select
-                  prefix={<FontAwesomeIcon icon={faPlaneArrival} />}
-                  placeholder="Chọn điểm đến"
-                  className="no-border-select"
-                >
-                  {listAirport.map((item) => (
-                    <Option key={item.id} value={item.id}>
-                      {item.name} ({item.code})
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                label="Ngày đi"
-                style={{ flex: 1 }}
-                name="departureDate"
-              >
-                <DatePicker
-                  prefix={<CalendarOutlined />}
-                  suffixIcon={[]}
-                  placeholder="Chọn ngày"
-                  disabledDate={disabledDate}
-                  format="DD-MM-YYYY"
-                  style={{ width: "100%" }}
-                  className="no-border-date"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Hạng ghế" style={{ flex: 1 }} name="seatClass">
-                <Select
-                  prefix={<SeatIcon width={18} height={18} />}
-                  placeholder="Chọn hạng ghế"
-                  className="no-border-select"
-                >
-                  {seatClasses.map((item, index) => (
+                  <Col span={12}>
+                    <Form.Item label="Từ" name="departure">
+                      <Select
+                        prefix={<FontAwesomeIcon icon={faPlaneDeparture} />}
+                        placeholder="Chọn điểm đi"
+                        className="no-border-select"
+                      >
+                        {listAirport.map((item) => (
+                          <Option key={item.id} value={item.id}>
+                            {item.name} ({item.code})
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label="Đến" name="arrival">
+                      <Select
+                        prefix={<FontAwesomeIcon icon={faPlaneArrival} />}
+                        placeholder="Chọn điểm đến"
+                        className="no-border-select"
+                      >
+                        {listAirport.map((item) => (
+                          <Option key={item.id} value={item.id}>
+                            {item.name} ({item.code})
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item
+                      label="Ngày đi"
+                      style={{ flex: 1 }}
+                      name="departureDate"
+                    >
+                      <DatePicker
+                        prefix={<CalendarOutlined />}
+                        suffixIcon={[]}
+                        placeholder="Chọn ngày"
+                        disabledDate={disabledDate}
+                        format="DD-MM-YYYY"
+                        style={{ width: "100%" }}
+                        className="no-border-date"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label="Hạng ghế"
+                      style={{ flex: 1 }}
+                      name="seatClass"
+                    >
+                      <Select
+                        prefix={<SeatIcon width={18} height={18} />}
+                        placeholder="Chọn hạng ghế"
+                        className="no-border-select"
+                      >
+                        {seatClasses.map((item, index) => (
                           <Select.Option key={index} value={item}>
                             {item}
                           </Select.Option>
                         ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
                 <div className="d-flex justify-content-end mt-4">
                   <Button
                     type="primary"
@@ -593,7 +653,7 @@ export default function Content({ setListAirline }) {
                     {carouselItems.map((item, index) => (
                       <div
                         key={index}
-                        className={selectedIndex === index ? 'pick-item' : ''}
+                        className={selectedIndex === index ? "pick-item" : ""}
                         style={{
                           textAlign: "center",
                           padding: "10px",
@@ -606,7 +666,6 @@ export default function Content({ setListAirline }) {
                           flexDirection: "column",
                           alignItems: "center",
                         }}
-                       
                         onClick={() => handleDateChange(index)}
                       >
                         <span
@@ -659,7 +718,7 @@ export default function Content({ setListAirline }) {
       </Card>
       <h5>Tất cả chuyến bay</h5>
       <div>
-        {listFlight.map((item, index) => (
+        {listFlightFilter.map((item, index) => (
           <Card
             bordered
             style={{
@@ -725,8 +784,7 @@ export default function Content({ setListAirline }) {
                       business: { ...prev.business, price: item.busPrice },
                       economy: { ...prev.economy, price: item.ecoPrice },
                     }))
-                    setListLuggages(item.luggages
-                    )
+                    setListLuggages(item.luggages)
                     showDrawerRight()
                   }}
                 >
@@ -852,6 +910,11 @@ export default function Content({ setListAirline }) {
                       placeholder="Chọn loại vé"
                       className="no-border-select"
                       style={{ width: "250px" }}
+                      value={selectedSeatClass}
+                      onChange={(value) => {
+                        const selectedItem = listSeatClass[value]
+                        handleOnChangeTicket(value, selectedItem?.price || 0)
+                      }}
                     >
                       {Object.entries(listSeatClass).map(([key, item]) => (
                         <Option key={key} value={key}>
@@ -867,18 +930,28 @@ export default function Content({ setListAirline }) {
                 </span>
                 <br />
                 <span style={{ color: "#555" }}>
-                  Hành lý ký gửi: 
-                    <b>
+                  Hành lý ký gửi:
+                  <b>
                     <Select
-                         style={{ width: "250px" }}
+                      style={{ width: "250px" }}
                       placeholder="Chọn hạng ghế"
                       className="no-border-select"
+                      value={selectedLuggage}
+                      onChange={(value) => {
+                        const selectedItem = listLuggages.find(
+                          (item) => item.id === value
+                        )
+                        handleOnChangeLuggage(value, selectedItem?.price || 0)
+                      }}
                     >
-                      {listLuggages && (listLuggages.map((item, index) => (
-                        <Option key={index} value={item.id}>
-                          {`Cân nặng:${item.weight} - ${item.price}`}
-                        </Option>
-                      )))}
+                      {listLuggages &&
+                        listLuggages.map((item, index) => (
+                          <Option key={index} value={item.id}>
+                            {`Cân nặng: ${
+                              item.weight
+                            }kg - ${item.price.toLocaleString("vi-VN")} VND}`}
+                          </Option>
+                        ))}
                     </Select>
                   </b>
                 </span>
@@ -891,7 +964,10 @@ export default function Content({ setListAirline }) {
                     marginTop: "10px",
                   }}
                 >
-                  Tổng: <b>1.000.000</b>
+                  Tổng:{" "}
+                  <b>
+                    {(seatPrice + luggagePrice).toLocaleString("vi-VN")} VND
+                  </b>
                 </div>
                 <div className=" w-100 d-flex justify-content-end">
                   <Button
@@ -904,6 +980,7 @@ export default function Content({ setListAirline }) {
                       borderRadius: "8px",
                     }}
                     danger
+                    onClick={() => handleBooking(flightChecked)}
                   >
                     Tiếp tục đặt chỗ
                   </Button>

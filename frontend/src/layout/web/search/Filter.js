@@ -3,7 +3,7 @@ import { Button, Card, Carousel, Checkbox, Menu, Radio, Slider } from "antd"
 import { SettingOutlined } from "@ant-design/icons"
 import SubMenu from "antd/es/menu/SubMenu"
 
-export default function Filter({ listAirline }) {
+export default function Filter({ listAirline ,setFilterAirline}) {
   const timeRanges = [
     { label: "Đêm đến Sáng", time: "00:00 - 06:00" },
     { label: "Sáng đến Trưa", time: "06:00 - 12:00" },
@@ -24,8 +24,14 @@ export default function Filter({ listAirline }) {
     setPriceRange(newValue)
   }
 
-  const handleCheckboxChange = (e) => {
-    console.log(`checked = ${e.target.checked}`)
+  const handleCheckboxChange = (e,child) => {
+    setFilterAirline((prev) => {
+      if (e.target.checked) {
+        return [...prev, child.label];
+      } else {
+        return prev.filter((label) => label !== child.label);
+      }
+    });
   }
   const items = [
     {
@@ -54,7 +60,7 @@ export default function Filter({ listAirline }) {
           margin: "0 10px",
         }}
       >
-        <Checkbox onChange={handleCheckboxChange}>
+        <Checkbox onChange={(e)=>handleCheckboxChange(e,child)}>
           <div className="d-flex">
             <div
               style={{
