@@ -104,7 +104,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
         vnp_Params.put("vnp_OrderType", orderType);
 
-        String returnUrl = ConfigVNPay.vnp_ReturnUrl2;
+        String returnUrl = ConfigVNPay.vnp_ReturnUrl;
         returnUrl += "?flightId=" + ticketRequest.getFlightId() + "&seatId=" + seat.getId();
 
         if(ticketRequest.getLuggageId() != null && ticketRequest.getLuggageId() != 0){

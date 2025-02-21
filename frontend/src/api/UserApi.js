@@ -86,3 +86,22 @@ export async function register(data) {
     })
   }
 }
+export async function getDataByUser() {
+  const link = "http://localhost:8081/api/user/profile"
+  const token = localStorage.getItem("jwtToken")
+  try {
+    const response = await fetch(link, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+
+    if (response.ok) {
+      return response
+    }
+  } catch (error) {
+    console.error("Error:", error.message)
+  }
+}

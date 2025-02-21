@@ -96,7 +96,24 @@ code {
 .custom-select.ant-select:focus {
   border-bottom: 2px solid #007bff; /* Đổi màu khi focus */
 }
-.pick-item{
+.pick-item {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
 }

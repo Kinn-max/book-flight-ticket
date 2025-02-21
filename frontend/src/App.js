@@ -12,6 +12,7 @@ import CommonHome from "./layout/web/home/CommonHome"
 import CommonSearch from "./layout/web/search/CommonSearch"
 import { jwtDecode } from "jwt-decode"
 import Booking from "./layout/web/booking/booking"
+import Profile from "./layout/web/profile/Profile"
 
 function App() {
   const token = localStorage.getItem("jwtToken")
@@ -30,6 +31,7 @@ function App() {
             <Route path="" element={<CommonHome />} />
             <Route path="search" element={<CommonSearch />} />
             <Route path="booking" element={<Booking />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
           <Route
             path="/admin/*"
