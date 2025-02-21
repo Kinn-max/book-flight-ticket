@@ -52,6 +52,7 @@ export default function Profile() {
         setEmail(result.email)
         setDob(result.dateOfBirth)
         setAddress(result.address)
+        console.log(result.bookingList)
         setTicketList(result.bookingList)
       }
     } catch (error) {

@@ -17,7 +17,9 @@ public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
             "FROM TicketEntity e " +
             "JOIN AirportEntity a ON e.flightEntity.arrivalId = a.id " +
             "JOIN AirportEntity d ON e.flightEntity.departureId = d.id " +
-            "WHERE e.userEntity.id = :userId")
+            "WHERE e.userEntity.id = :userId " +
+            "ORDER BY e.id DESC")
     List<TicketBookedInfo> findByUserId(Long userId);
+
 
 }
