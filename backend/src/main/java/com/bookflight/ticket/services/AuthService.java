@@ -12,4 +12,5 @@ public interface AuthService {
     JwtAuthenticationResponse login(String email );
     UserResponse getProfile();
     boolean updateProfile(ProfileRequest profileRequest);
+    boolean updatePassword(String oldPassword, String newPassword);
 }

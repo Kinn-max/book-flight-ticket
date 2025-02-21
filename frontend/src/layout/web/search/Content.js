@@ -42,7 +42,11 @@ import utc from "dayjs/plugin/utc"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 dayjs.extend(utc)
 const { Option } = Select
-export default function Content({ setListAirline, filterAirline }) {
+export default function Content({
+  setListAirline,
+  filterAirline,
+  filterPrice,
+}) {
   const generateFlightItems = (flightChecked) => [
     {
       key: "1",
@@ -359,8 +363,8 @@ export default function Content({ setListAirline, filterAirline }) {
     getDataFlightByHomeSearch()
   }, [listAirport])
   useEffect(() => {
-    handleFilterAirline()
-  }, [filterAirline])
+    handleFilter()
+  }, [filterAirline, filterPrice])
   const handleShowTab = () => {
     setShowTab((pre) => !pre)
   }
@@ -419,17 +423,7 @@ export default function Content({ setListAirline, filterAirline }) {
     }
     setSelectedIndex(index)
   }
-  const handleFilterAirline = () => {
-    if (filterAirline.length > 0) {
-      const filteredFlights = listFlight.filter((flight) =>
-        filterAirline.includes(flight.airline)
-      )
-      setListFlightFilter(filteredFlights)
-      console.log("Filtered Flights:", filteredFlights)
-    } else {
-      setListFlightFilter(listFlight)
-    }
-  }
+
   const handleOnChangeTicket = (value, price) => {
     setSelectedSeatClass(value)
     setSeatPrice(price)
@@ -456,10 +450,30 @@ export default function Content({ setListAirline, filterAirline }) {
           flight: flightData,
           luggage: selectedLuggage,
           seatClass: tmp,
+          totalPrice: seatPrice + luggagePrice,
         },
       })
     }
   }
+  const handleFilter = () => {
+    let filteredFlights = [...listFlight]
+    if (filterAirline.length > 0) {
+      filteredFlights = filteredFlights.filter((flight) =>
+        filterAirline.includes(flight.airline)
+      )
+    }
+
+    if (filterPrice.length === 2) {
+      const [minPrice, maxPrice] = filterPrice
+      filteredFlights = filteredFlights.filter(
+        (flight) => flight.ecoPrice >= minPrice && flight.ecoPrice <= maxPrice
+      )
+    }
+
+    setListFlightFilter(filteredFlights)
+    console.log("Filtered Flights:", filteredFlights)
+  }
+
   return (
     <div>
       <Card

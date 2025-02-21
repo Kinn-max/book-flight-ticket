@@ -108,4 +108,20 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
         return true;
     }
+
+    @Override
+    public boolean updatePassword(String oldPassword, String newPassword) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserEntity user = userRepository.findByEmail(userDetails.getUsername());
+        if (user == null) return false;
+
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -16,6 +16,7 @@ import dayjs from "dayjs"
 import LoadingGuest from "../../../util/LoadingGuest"
 import { payment } from "../../../api/PaymentApi"
 import { openNotification } from "../../../util/NotificationRight"
+import { getDataByUser } from "../../../api/UserApi"
 
 export default function Booking() {
   const location = useLocation()
@@ -23,6 +24,7 @@ export default function Booking() {
   const flightData = location.state?.flight
   const selectedLuggage = location.state?.luggage
   const seatClass = location.state?.seatClass
+  const totalPrice = location.state?.totalPrice
   const [flightChecked, setFlightChecked] = useState(flightData)
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
@@ -43,10 +45,25 @@ export default function Booking() {
       setCurrent(2)
     }
   }, [info])
+  useEffect(() => {
+    fetchDataUser()
+  }, [])
+  const fetchDataUser = async () => {
+    try {
+      const response = await getDataByUser()
+      if (response.ok) {
+        const result = await response.json()
+        console.log(result)
+        setFullName(result.fullName)
+        setPhoneNumber(result.phoneNumber)
+        setEmail(result.email)
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra")
+    }
+  }
   const navigate = useNavigate()
-  console.log("Dữ liệu chuyến bay:", flightData)
-  console.log("Dữ liệu Luggage:", selectedLuggage)
-  console.log("Dữ liệu seatClass:", seatClass)
+
   const handleNextPayment = () => {
     const bookingData = {
       name: fullName,
@@ -267,7 +284,7 @@ export default function Booking() {
                             fontWeight: "bold",
                           }}
                         >
-                          3.021.000 VND
+                          {totalPrice.toLocaleString("vi-VN")} VND
                         </div>
                       </Col>
                     </Row>

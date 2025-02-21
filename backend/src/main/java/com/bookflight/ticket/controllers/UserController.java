@@ -32,7 +32,21 @@ public class UserController {
             if (result) {
                 return ResponseEntity.ok("Update successful");
             }
-            return ResponseEntity.ok("Update failed");
+            return ResponseEntity.badRequest().body("Update failed");
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/update-password")
+    public ResponseEntity<?> updatePassword(
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword) {
+        try {
+            boolean result = authService.updatePassword(oldPassword, newPassword);
+            if (result) {
+                return ResponseEntity.ok("Update successful");
+            }
+            return ResponseEntity.badRequest().body("Update failed");
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -1,8 +1,13 @@
 import { AppstoreOutlined } from "@ant-design/icons"
 import { Button, Card, Col, Form, Input, Menu, message, Row } from "antd"
 import React, { useEffect, useState } from "react"
-import { getDataByUser } from "../../../api/UserApi"
+import {
+  getDataByUser,
+  uploadDataByUser,
+  uploadPassWordUser,
+} from "../../../api/UserApi"
 import dayjs from "dayjs"
+import { openNotification } from "../../../util/NotificationRight"
 
 const items = [
   {
@@ -27,6 +32,9 @@ export default function Profile() {
   const [dob, setDob] = useState("")
   const [address, setAddress] = useState("")
   const [ticketList, setTicketList] = useState([])
+  const [oldPassword, setOldPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmNewPassword, setConfirmNewPassword] = useState("")
   const handleMenuClick = (e) => {
     setSelectedKey(e.key)
   }
@@ -51,13 +59,70 @@ export default function Profile() {
     }
   }
   const handleSubmit = () => {
-    console.log({
+    const formattedDob = dob.split("-").reverse().join("-")
+    const data = {
       fullName,
-      phoneNumber,
       email,
-      dob,
+      phoneNumber,
       address,
-    })
+      dateOfBirth: formattedDob,
+    }
+    console.log(data)
+    const fetchUploadProfile = async (data) => {
+      try {
+        const response = await uploadDataByUser(data)
+        if (response.ok) {
+          const message = await response.text()
+          openNotification({
+            type: "success",
+            message: "Thành công",
+            description: "Cập nhật thông tin thành công!",
+          })
+        }
+      } catch (error) {
+        openNotification({
+          type: "error",
+          message: "Lỗi",
+          description: "Đã có lỗi xảy ra!",
+        })
+      }
+    }
+    fetchUploadProfile(data)
+  }
+  const handleChangePassWord = () => {
+    if (!oldPassword || !newPassword || !confirmNewPassword) {
+      message.error("Vui lòng điền đầy đủ thông tin!")
+      return
+    }
+
+    if (newPassword.length < 6) {
+      message.error("Mật khẩu mới phải có ít nhất 6 ký tự!")
+      return
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      message.error("Mật khẩu nhập lại không khớp!")
+      return
+    }
+    const fetchUploadPassword = async (oldPass, newPass) => {
+      try {
+        const response = await uploadPassWordUser(oldPass, newPass)
+        if (response.ok) {
+          openNotification({
+            type: "success",
+            message: "Thành công",
+            description: "Cập nhật mật khẩu thành công!",
+          })
+        }
+      } catch (error) {
+        openNotification({
+          type: "error",
+          message: "Mật khẩu không đúng",
+          description: "Đã có lỗi xảy ra!",
+        })
+      }
+    }
+    fetchUploadPassword(oldPassword, newPassword)
   }
   return (
     <div
@@ -199,6 +264,11 @@ export default function Profile() {
                       <h3 style={{ fontSize: "18px", color: "#4096ff" }}>
                         {item.seatNumber}
                       </h3>
+                      <h3
+                        style={{ fontSize: "16px", color: "rgb(255, 94, 31)" }}
+                      >
+                        {item.flightCode}
+                      </h3>
                     </Col>
                     <Col span={20}>
                       <h3 className="text-start">{item.name}</h3>
@@ -306,28 +376,46 @@ export default function Profile() {
                 layout="horizontal"
                 form={form}
                 initialValues={{ layout: "horizontal" }}
-                labelCol={{ span: 6 }}
+                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
               >
+                <Form.Item label="Mật khẩu cũ" style={{ marginBottom: "16px" }}>
+                  <Input.Password
+                    placeholder="Nhập mật khẩu cũ"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                  />
+                </Form.Item>
+
                 <Form.Item
                   label="Mật khẩu mới"
                   style={{ marginBottom: "16px" }}
                 >
-                  <Input.Password placeholder="Nhập mật khẩu mới" />
+                  <Input.Password
+                    placeholder="Nhập mật khẩu mới"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
                 </Form.Item>
 
                 <Form.Item
-                  label="Nhập lại mật khẩu"
+                  label="Xác nhận mật khẩu mới"
                   style={{ marginBottom: "16px" }}
                 >
-                  <Input.Password placeholder="Nhập lại mật khẩu" />
+                  <Input.Password
+                    placeholder="Nhập lại mật khẩu mới"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  />
                 </Form.Item>
 
                 <Form.Item
                   wrapperCol={{ span: 24 }}
                   style={{ textAlign: "center" }}
                 >
-                  <Button type="primary">Cập nhật</Button>
+                  <Button type="primary" onClick={handleChangePassWord}>
+                    Cập nhật
+                  </Button>
                 </Form.Item>
               </Form>
             </Card>

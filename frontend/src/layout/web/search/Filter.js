@@ -3,7 +3,11 @@ import { Button, Card, Carousel, Checkbox, Menu, Radio, Slider } from "antd"
 import { SettingOutlined } from "@ant-design/icons"
 import SubMenu from "antd/es/menu/SubMenu"
 
-export default function Filter({ listAirline ,setFilterAirline}) {
+export default function Filter({
+  listAirline,
+  setFilterAirline,
+  setFilterPrice,
+}) {
   const timeRanges = [
     { label: "Đêm đến Sáng", time: "00:00 - 06:00" },
     { label: "Sáng đến Trưa", time: "06:00 - 12:00" },
@@ -12,7 +16,7 @@ export default function Filter({ listAirline ,setFilterAirline}) {
   ]
 
   const [selectedTime, setSelectedTime] = useState(null)
-  const [priceRange, setPriceRange] = useState([2000000, 4500000])
+  const [priceRange, setPriceRange] = useState([1000000, 4500000])
 
   const handleTimeSelect = (range) => {
     console.log("Bạn đã chọn:", range)
@@ -22,16 +26,17 @@ export default function Filter({ listAirline ,setFilterAirline}) {
   const handlePriceChange = (newValue) => {
     console.log("Giá trị:", newValue)
     setPriceRange(newValue)
+    setFilterPrice(newValue)
   }
 
-  const handleCheckboxChange = (e,child) => {
+  const handleCheckboxChange = (e, child) => {
     setFilterAirline((prev) => {
       if (e.target.checked) {
-        return [...prev, child.label];
+        return [...prev, child.label]
       } else {
-        return prev.filter((label) => label !== child.label);
+        return prev.filter((label) => label !== child.label)
       }
-    });
+    })
   }
   const items = [
     {
@@ -41,10 +46,10 @@ export default function Filter({ listAirline ,setFilterAirline}) {
         key: airline.key,
         label: airline.label,
         price: airline.price,
-        logo: airline.logo
+        logo: airline.logo,
       })),
     },
-  ];
+  ]
   const onClick = (e) => {
     console.log("click ", e)
   }
@@ -60,7 +65,7 @@ export default function Filter({ listAirline ,setFilterAirline}) {
           margin: "0 10px",
         }}
       >
-        <Checkbox onChange={(e)=>handleCheckboxChange(e,child)}>
+        <Checkbox onChange={(e) => handleCheckboxChange(e, child)}>
           <div className="d-flex">
             <div
               style={{
@@ -70,11 +75,7 @@ export default function Filter({ listAirline ,setFilterAirline}) {
                 borderRadius: "10px",
               }}
             >
-              <img
-               src={child.logo}
-                alt="logo"
-                style={{ width: "100%" }}
-              />
+              <img src={child.logo} alt="logo" style={{ width: "100%" }} />
             </div>
             <div>
               <span className="fs-6">{child.label}</span>
@@ -92,7 +93,15 @@ export default function Filter({ listAirline ,setFilterAirline}) {
           <div style={{ width: "350px", height: "160px" }}>
             <img
               style={{ width: "100%", height: "100%" }}
-              src="https://tse2.mm.bing.net/th?id=OIP.Jc42CWDK7HH0I14bw3I5HQHaEW&pid=Api&P=0&h=180"
+              src={
+                "https://tse4.mm.bing.net/th?id=OIP.r_42W0k3SXIQARSPQPpZAwHaDj&pid=Api&P=0&h=180"
+              }
+            />
+          </div>
+          <div style={{ width: "350px", height: "160px" }}>
+            <img
+              style={{ width: "100%", height: "100%" }}
+              src="https://tse4.mm.bing.net/th?id=OIP.jKsMxgtsqtSOOmhTWfHgawHaDP&pid=Api&P=0&h=180"
             />
           </div>
         </Carousel>

@@ -105,3 +105,45 @@ export async function getDataByUser() {
     console.error("Error:", error.message)
   }
 }
+export async function uploadDataByUser(data) {
+  const link = "http://localhost:8081/api/user/profile"
+  const token = localStorage.getItem("jwtToken")
+  try {
+    const response = await fetch(link, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (response.ok) {
+      return response
+    }
+  } catch (error) {
+    console.error("Error:", error.message)
+  }
+}
+export async function uploadPassWordUser(oldPassword, newPassword) {
+  const link = "http://localhost:8081/api/user/update-password"
+  const token = localStorage.getItem("jwtToken")
+  try {
+    const response = await fetch(
+      `${link}?oldPassword=${oldPassword}&newPassword=${newPassword}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+
+    if (response.ok) {
+      return response
+    }
+  } catch (error) {
+    console.error("Error:", error.message)
+  }
+}
